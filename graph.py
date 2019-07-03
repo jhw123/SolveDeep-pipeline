@@ -20,12 +20,12 @@ class Graph:
 	def add_nodes(self, node_lst):
 		for node in node_lst:
 			self.max_index = self.max_index+1
-			self.nodes.append({"index": self.max_index, "nodes": [node]})
+			self.nodes.append({"index": self.max_index, "nodes": [node], "size": 1})
 		return self.max_index
 
 	def add_node(self, node, head=False):
 		self.max_index += 1
-		self.nodes.append({"index": self.max_index, "nodes": [node]})
+		self.nodes.append({"index": self.max_index, "nodes": [node], "size": 1})
 		if(head):
 			self.heads.append(self.max_index)
 		return self.max_index
