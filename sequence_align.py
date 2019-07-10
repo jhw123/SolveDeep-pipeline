@@ -1,4 +1,4 @@
-def align(seq1, seq2, scorefunc, nodes, nodes_group):
+def alignGlobal(seq1, seq2, scorefunc, nodes, nodes_group):
 	dp = [[0 for x in range(len(seq2))] for y in range(len(seq1))]
 	seq = [[0 for x in range(len(seq2))] for y in range(len(seq1))]
 
@@ -57,3 +57,6 @@ def align(seq1, seq2, scorefunc, nodes, nodes_group):
 		j -= 1
 
 	return [seq1_txt, seq2_txt, dp[len(seq1)-1][len(seq2)-1]]
+
+def alignGreedy(seq1, seq2, nodes, nodes_group):
+	pass
