@@ -4,10 +4,24 @@ class Graph:
 		self.nodes = snapshot["nodes"]
 		self.edges = snapshot["edges"]
 		self.heads = snapshot["heads"]
+		self.tails = snapshot["tails"]
 		self.n = snapshot["n"]
 
 	def get_heads(self):
 		return self.heads
+
+	def add_head(self, head_idx):
+		if head_idx not in self.heads:
+			self.heads.append(head_idx)
+		return self.heads
+
+	def get_tails(self):
+		return self.tails
+
+	def add_tail(self, tail_idx):
+		if tail_idx not in self.tails:
+			self.tails.append(tail_idx)
+		return self.tails
 
 	def add_edges(self, edge_lst):
 		for edge in edge_lst:
@@ -26,8 +40,8 @@ class Graph:
 	def add_node(self, node, head=False):
 		self.max_index += 1
 		self.nodes.append({"index": self.max_index, "nodes": [node], "size": 1})
-		if(head):
-			self.heads.append(self.max_index)
+		# if(head):
+		# 	self.heads.append(self.max_index)
 		return self.max_index
 
 	def get_edges(self):
@@ -44,6 +58,7 @@ class Graph:
 				"nodes": self.nodes,
 				"edges": self.edges,
 				"heads": self.heads,
+				"tails": self.tails,
 				"n": self.n
 				}
 
@@ -52,6 +67,7 @@ class Graph:
 		self.nodes = snapshot["nodes"]
 		self.edges = snapshot["edges"]
 		self.heads = snapshot["heads"]
+		self.tails = snapshot["tails"]
 		self.n = snapshot["n"]
 
 	def get_direct_children(self, idx):
@@ -74,6 +90,9 @@ class Graph:
 			child_subsequences = self.get_subsequences(child, threshold)
 			if(child_subsequences == -1):
 				continue
+			# If the current cluster includes a tail node, append a subsequence that stops at the current cluster
+			# if idx in self.tails:
+			# 	ret.append([idx])
 			for sub_sequence in child_subsequences:
 				sub_sequence.insert(0, idx)
 				ret.append(sub_sequence)
@@ -101,7 +120,8 @@ class Graph:
 
 	#print all the infomation about this graph
 	def print_nodes(self):
-		print(self.heads)
+		print("HEAD:", self.heads)
+		print("TAIL:", self.tails)
 		for node_group in self.nodes:
 			print("#"+str(node_group["index"]))
 			for node in node_group["nodes"]:
@@ -117,4 +137,9 @@ class Graph:
 				unique_lst.append(x)
 		self.edges = unique_lst
 
+	def checkIfDuplicateLabelExist(self, label, cluster):
+		for node in cluster["nodes"]:
+			if node["label"] == label:
+				return True
+		return False
 
