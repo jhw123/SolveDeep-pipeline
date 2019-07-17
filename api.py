@@ -80,9 +80,9 @@ class Merge_sequence(Resource):
             sequences = db.child(topic+"/problems/"+problem_num+"/sequences").get().val()
 
             cnt = 0
-            G = Graph({"max_index": -1, "nodes": [], "edges": [], "heads": [], "n": cnt})
+            G = Graph({"max_index": -1, "nodes": [], "edges": [], "heads": [], "tails": [], "n": cnt})
 
-            for key in sequences:
+            for key in sorted(sequences.keys()):
                 nodes = sequences[key]["nodes"]
                 if("edges" in sequences[key]):
                     edges = sequences[key]["edges"]
@@ -91,7 +91,11 @@ class Merge_sequence(Resource):
 
                 if(cnt == 0):
                     for node in nodes:
-                        G.add_node(node, (nodes.index(node)) == 0)
+                        new_idx = G.add_node(node)
+                        if (nodes.index(node)) == 0:
+                            G.add_head(new_idx)
+                        elif (nodes.index(node)) == len(nodes):
+                            G.add_tail(new_idx)
                     for edge in edges:
                         G.add_edge([ int(edge[0]), int(edge[1]) ])
                 else:
@@ -106,10 +110,38 @@ class Merge_sequence(Resource):
         except Exception as e:
             return {'error': str(e)}
 
+# class Word_frequency(Resource):
+#     def post(self):
+#         try:
+#             data = request.get_json(force=True)
+#             topic = data["topic"]
+#             problem_num = data["problem_num"]
+#             sequences = db.child(topic+"/problems/"+problem_num+"/sequences").get().val()
+
+#             term_weight = getSubgoalTermWeight(sequences)
+
+#             with open('term_weight.json', 'w') as f:
+#                 json.dump(term-weight, f)
+
+#             return term_weight
+
+#         except Exception as e:
+#             return {'error': str(e)}
+
+class Compare_subgoals(Resource):
+    def post(self):
+        try:
+            data = request.get_json(force=True)
+            return computeSubgoalLabelSimilarity({"label": data["label1"]}, {"label": data["label2"]})
+        except Exception as e:
+            return {'error': str(e)}
+
 api.add_resource(Similarity, '/w2v_similarity')
 api.add_resource(Sequence_align, '/seq_align')
 api.add_resource(Sequence_align_min, '/seq_align_min')
 api.add_resource(Merge_sequence, '/merge_sequence')
+api.add_resource(Compare_subgoals, '/compare_subgoals')
+# api.add_resource(Word_frequency, '/word_frequency')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=6001, debug=True)
