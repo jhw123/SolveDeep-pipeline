@@ -68,7 +68,7 @@ def wordSemanticEqual(word1, word2):
 	        else:
 	            return False
 	    except Exception as e:
-	    	print(e, word1, word2)	# This often prints out keyError. e.g. KeyError("word 'u=x+2' not in vocabulary"
+	    	# print(e, word1, word2)	# This often prints out keyError. e.g. KeyError("word 'u=x+2' not in vocabulary"
 	        if(word1 == word2):
 	            return True
 	        else:
