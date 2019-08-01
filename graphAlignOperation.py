@@ -2,6 +2,7 @@ from graph import Graph
 from sequence_align import *
 from word_processing import *
 from wordSet import *
+from statistics import stdev, variance
 
 # ntlk natural language package for subgoal label comparison
 from nltk.tokenize import word_tokenize
@@ -31,6 +32,7 @@ def findTargetSimilarityGraphSequence(nodes, edgs, G, threshold, targetSimilarit
             continue
         for subsequence in node_group_subsequences:
             match = alignGlobal(nodes_idx, subsequence, globalAlignmentScoreFunc, nodes, G.get_nodes())
+            print(match[2])
             if(abs(match[2] - targetSimilarity) < min_diff):
                 min_diff = abs(match[2] - targetSimilarity)
                 min_seq1 = match[0]
@@ -73,9 +75,13 @@ def globalAlignmentScoreFunc(node_idx, node_group_idx, nodes, node_group):
 
 def computeSimilarityBetweenSubgoalAndCluster(node, nodes):
     score = 0
+    similarities = []
     for each_node in nodes:
-        score += pow(computeSubgoalLabelSimilarity(each_node, node), 2)
+        similarity = computeSubgoalLabelSimilarity(each_node, node)
+        similarities.append(similarity)
+        score += pow(similarity, 2)
     score /= len(nodes)
+    print(stdev(similarities))
     return score
 
 def convertTagListToNoun(POS_tag_list):
@@ -113,16 +119,16 @@ def computeSubgoalLabelSimilarity(node1, node2):
     # Convert the nouns and verbs to their original forms
     node1_word_set = [lm.lemmatize(w) for w in node1_word_list]
     node2_word_set = [lm.lemmatize(w) for w in node2_word_list]
-    print(node1_word_set, node2_word_set)
+    # print(node1_word_set, node2_word_set)
 
     # Find the intersection of word sets
     intersection = wordSetIntersection(node1_word_set, node2_word_set)
-    print("Intersection", intersection)
+    # print("Intersection", intersection)
     for word in intersection:
         try:
             score += term_weight[word]
         except Exception as e:
-            print(e)
+            # print(e)
             score += 3.0    # add 3.0 for a term that is not in the term_weight. we add high score because being not
                             # in the term_weight means the term is not frequently used by others.
     
