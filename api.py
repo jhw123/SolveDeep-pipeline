@@ -99,7 +99,10 @@ class Merge_sequence(Resource):
                     for edge in edges:
                         G.add_edge([ int(edge[0]), int(edge[1]) ])
                 else:
-                    addSequenceToGraph(nodes, edges, G)
+                    alignment = findMostSimilarGraphSequence(nodes, edges, G, 1)
+                    seq_alignment = alignment[1]
+                    graph_alignment = alignment[2]
+                    G.addSequenceToGraph(nodes, edges, seq_alignment, graph_alignment)
                 cnt += 1
 
             G.n = cnt

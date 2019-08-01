@@ -14,42 +14,6 @@ import json
 with open('term-weight.json') as term_weight_file:    
     term_weight = json.load(term_weight_file)
 
-def addSequenceToGraph(nodes, edges, G):
-    result = findMostSimilarGraphSequence(nodes, edges, G, 1)
-    max_seq1 = result[1]
-    max_seq2 = result[2]
-
-    translation = {}
-    for i in range(len(max_seq1)):
-        # Match: add a subgoal node to an existing cluster
-        if max_seq1[i] != "_" and max_seq2[i] != "_":
-            node = getNodesForIndexes([max_seq1[i]], nodes)[0]
-            if int(max_seq1[i]) == int(nodes[0]["index"]):
-                G.add_head(int(max_seq2[i]))
-            if int(max_seq1[i]) == int(nodes[-1]["index"]):
-                G.add_tail(int(max_seq2[i]))
-            node_group_node = G.get_node(max_seq2[i])
-            
-            # Check if there exists a duplicate label in the cluster
-            if not G.checkIfDuplicateLabelExist(node["label"], node_group_node):
-                node_group_node["nodes"].append(node)
-
-            translation[max_seq1[i]] = max_seq2[i]
-        elif max_seq1[i] == "_":
-            continue
-        # Insertion: add a subgoal node as an new cluster
-        else:
-            node = getNodesForIndexes([max_seq1[i]], nodes)[0]
-            new_idx = G.add_node(node)
-            if int(max_seq1[i]) == int(nodes[0]["index"]):
-                G.add_head(new_idx)
-            if int(max_seq1[i]) == int(nodes[-1]["index"]):
-                G.add_tail(new_idx)
-            translation[max_seq1[i]] = str(new_idx)
-    for edge in edges:
-        G.add_edge([ int(translation[str(edge[0])]), int(translation[str(edge[1])]) ])
-    G.n += 1
-
 def findTargetSimilarityGraphSequence(nodes, edgs, G, threshold, targetSimilarity=2.0):
     node_group_idx = G.get_idxs()
     node_group_head = G.get_heads()
@@ -90,6 +54,7 @@ def findMostSimilarGraphSequence(nodes, edges, G, threshold):
             continue
         for subsequence in node_group_subsequences:
             match = alignGlobal(nodes_idx, subsequence, globalAlignmentScoreFunc, nodes, G.get_nodes())
+            print(match[2])
             if(match[2] > max_val):
                 max_val = match[2]
                 max_seq1 = match[0]
