@@ -127,10 +127,9 @@ def computeSubgoalLabelSimilarity(node1, node2):
                             # in the term_weight means the term is not frequently used by others.
     
     # If one wordset is the subset of the other, conclude the labels are the same
-    if checkIfWordSetIsSubset(node1_word_set, intersection):
-        return 1.0
-    if checkIfWordSetIsSubset(node2_word_set, intersection):
-        return 1.0        
+    if (checkIfWordSetIsSubset(node1_word_set, intersection) 
+        or checkIfWordSetIsSubset(node2_word_set, intersection)):
+        return 1.0       
 
     # Find the maximum score possible for normalization
     max_score = 0
