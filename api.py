@@ -25,7 +25,7 @@ class Similarity(Resource):
             w1 = args['w1']
             w2 = args['w2']
             sim = str(model.similarity(w1, w2))
-            # sim = "1"
+
             return {'w1': w1, 'w2': w2, 'similarity': sim}
         except Exception as e:
             return {'error': str(e)}
@@ -113,24 +113,6 @@ class Merge_sequence(Resource):
         except Exception as e:
             return {'error': str(e)}
 
-# class Word_frequency(Resource):
-#     def post(self):
-#         try:
-#             data = request.get_json(force=True)
-#             topic = data["topic"]
-#             problem_num = data["problem_num"]
-#             sequences = db.child(topic+"/problems/"+problem_num+"/sequences").get().val()
-
-#             term_weight = getSubgoalTermWeight(sequences)
-
-#             with open('term_weight.json', 'w') as f:
-#                 json.dump(term-weight, f)
-
-#             return term_weight
-
-#         except Exception as e:
-#             return {'error': str(e)}
-
 class Compare_subgoals(Resource):
     def post(self):
         try:
@@ -144,7 +126,6 @@ api.add_resource(Sequence_align, '/seq_align')
 api.add_resource(Sequence_align_min, '/seq_align_min')
 api.add_resource(Merge_sequence, '/merge_sequence')
 api.add_resource(Compare_subgoals, '/compare_subgoals')
-# api.add_resource(Word_frequency, '/word_frequency')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=6001, debug=True)
