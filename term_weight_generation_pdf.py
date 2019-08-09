@@ -2,13 +2,14 @@ import os, sys
 import nltk
 from nltk.tokenize import word_tokenize
 from nltk.tag import pos_tag
-from nltk.stem import WordNetLemmatizer
+from nltk.stem import WordNetLemmatizer, LancasterStemmer
 from word_processing import *
 import json
 import enchant
 from collections import deque
 
 wnl = WordNetLemmatizer()
+ls = LancasterStemmer()
 
 # term is the string to find frequency
 # document is a list of terms which collectively represent a document
@@ -22,7 +23,8 @@ def calculateTF(term, document):
 
 def containsSemanticEqual(term, document):
 	for doc_term in document:
-		if wordSemanticEqual(term, doc_term):
+		#if wordSemanticEqual(term, doc_term):
+		if term == doc_term:
 			return True
 	return False
 
@@ -34,6 +36,8 @@ def calculateIDF(term, document_group):
 		#if calculateTF(term, document) > 0:
 		if containsSemanticEqual(term, document):
 			frequency += 1
+	if frequency == 0:
+		print(term)
 	return math.log(len(document_group) / float(frequency))
 
 
@@ -43,11 +47,13 @@ def getSubgoalTermWeight(label_sequences):
 	key_list = []
 	for label_sequence in label_sequences:
 		POS_tag_list = pos_tag(word_tokenize(label_sequence))
-		keyword_list = [t[0] for t in POS_tag_list if ("NN" in t[1] or "JJ" in t[1] or t[1] == "VB")]
+		keyword_list = [ls.stem(t[0]) for t in POS_tag_list if ("NN" in t[1] or "JJ" in t[1] or t[1] == "VB")]
 		# print([t for t in POS_tag_list if ("NN" in t[1] or "JJ" in t[1] or t[1] == "VB")])
 		document_group.append(keyword_list)
 		key_list += keyword_list
 	key_list = set(key_list)
+
+	print(key_list)
 
 	print("Tokenizing complete.")
 
@@ -85,7 +91,7 @@ def main():
 	term_weight = getSubgoalTermWeight(sequences)
 
 	with open('term_weight.json', 'w') as f:
-	    json.dump(term_weight, f)
+	    json.dump(term_weight, f, sort_keys=True, indent=4)
 
 	#print(term_weight)
 
