@@ -1,3 +1,7 @@
+from timeit import default_timer as timer
+
+start = timer()
+
 import os, sys
 import nltk
 from nltk.tokenize import word_tokenize
@@ -74,8 +78,6 @@ def main():
 
 	dirname = os.path.dirname(__file__)
 	for file in os.listdir('Data'):
-		if filecount == 2:
-			break
 		if file.endswith(".txt"):
 			print(file)
 			filecount += 1
@@ -93,6 +95,8 @@ def main():
 	with open('term_weight.json', 'w') as f:
 	    json.dump(term_weight, f, sort_keys=True, indent=4)
 
+	end = timer()
+	print(end - start)
 	#print(term_weight)
 
 
