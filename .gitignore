@@ -1,6 +1,8 @@
 db-config.json
 *.pyc
-term-weight*
+term_weight/term-weight_generation.py
+term_weight/term_weight_generation_pdf.py
+term_weight/term_weight_old.json
 glove_vectors.txt
 .DS_store
 rest-env/

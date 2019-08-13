@@ -12,7 +12,7 @@ lm = WordNetLemmatizer()
 
 # Load the subgoal term weight file
 import json
-with open('term-weight.json') as term_weight_file:    
+with open('./term_weight/term_weight_Oxford17.json') as term_weight_file:    
     term_weight = json.load(term_weight_file)
 
 def findTargetSimilarityGraphSequence(nodes, edgs, G, threshold, targetSimilarity=2.0):
