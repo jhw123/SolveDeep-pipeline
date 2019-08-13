@@ -3,17 +3,31 @@ from sequence_align import *
 from word_processing import *
 from wordSet import *
 from statistics import stdev, variance
+import sys
 
 # ntlk natural language package for subgoal label comparison
 from nltk.tokenize import word_tokenize
 from nltk.tag import pos_tag
-from nltk.stem import WordNetLemmatizer
+from nltk.stem import WordNetLemmatizer, LancasterStemmer
+
 lm = WordNetLemmatizer()
+ls = LancasterStemmer()
 
 # Load the subgoal term weight file
 import json
-with open('term-weight.json') as term_weight_file:    
-    term_weight = json.load(term_weight_file)
+with open('term_weight_Oxford17.json') as term_weight_file:    
+    term_weight_Oxford17 = json.load(term_weight_file)
+
+with open('term_weight_old.json') as term_weight_file:    
+    term_weight_old = json.load(term_weight_file)
+
+def getTermWeight(term, config):
+    if config == 'Oxford17':
+        return term_weight_Oxford17[ls.stem(term)]
+    elif config == 'old':
+        return term_weight_old[term]
+    else:
+        raise Exception('Unknown config')
 
 def findTargetSimilarityGraphSequence(nodes, edgs, G, threshold, targetSimilarity=2.0):
     node_group_idx = G.get_idxs()
@@ -25,10 +39,10 @@ def findTargetSimilarityGraphSequence(nodes, edgs, G, threshold, targetSimilarit
     for head in node_group_head:
         thres = threshold
         node_group_subsequences = G.get_subsequences(head, thres)
-        while(node_group_subsequences == -1 or len(node_group_subsequences) == 0):
+        while node_group_subsequences == -1 or len(node_group_subsequences) == 0:
             thres -= 1
             node_group_subsequences = G.get_subsequences(head, thres)
-        if(node_group_subsequences == -1):
+        if node_group_subsequences == -1:
             continue
         for subsequence in node_group_subsequences:
             match = alignGlobal(nodes_idx, subsequence, globalAlignmentScoreFunc, nodes, G.get_nodes())
@@ -103,7 +117,7 @@ def convertTagListToNoun(POS_tag_list):
             #     word_list.append(tag[0])
     return word_list
 
-def computeSubgoalLabelSimilarity(node1, node2):
+def computeSubgoalLabelSimilarity(node1, node2, config):
     score = 0
 
     # Fast comparison for identical labels
@@ -126,7 +140,7 @@ def computeSubgoalLabelSimilarity(node1, node2):
     # print("Intersection", intersection)
     for word in intersection:
         try:
-            score += term_weight[word]
+            score += getTermWeight(word, config)
         except Exception as e:
             # print(e)
             score += 3.0    # add 3.0 for a term that is not in the term_weight. we add high score because being not
@@ -141,12 +155,12 @@ def computeSubgoalLabelSimilarity(node1, node2):
     max_score = 0
     for word in node1_word_set:
         try:
-            max_score += term_weight[word]
+            max_score += getTermWeight(word, config)
         except Exception as e:
             max_score += 3.0
     for word in node2_word_set:
         try:
-            max_score += term_weight[word]
+            max_score += getTermWeight(word, config)
         except Exception as e:
             max_score += 3.0
     return score/max_score

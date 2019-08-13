@@ -1,2 +1,3 @@
 glove_vectors.txt
 .DS_store
+__pycache__/*
