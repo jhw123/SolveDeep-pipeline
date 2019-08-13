@@ -37,11 +37,9 @@ class Graph:
             self.nodes.append({"index": self.max_index, "nodes": [node], "size": 1})
         return self.max_index
 
-    def add_node(self, node, head=False):
+    def add_node(self, node):
         self.max_index += 1
         self.nodes.append({"index": self.max_index, "nodes": [node], "size": 1})
-        # if(head):
-        #     self.heads.append(self.max_index)
         return self.max_index
 
     def get_edges(self):

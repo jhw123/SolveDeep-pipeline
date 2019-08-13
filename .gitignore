@@ -1,3 +1,6 @@
 glove_vectors.txt
 .DS_store
-__pycache__/*
+__pycache__/
+db-config.json
+experiment1*
+rest-env/
