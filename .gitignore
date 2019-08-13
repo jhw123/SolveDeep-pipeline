@@ -1,2 +1,8 @@
+db-config.json
+*.pyc
+term-weight*
 glove_vectors.txt
 .DS_store
+rest-env/
+sftp-config.json
+solvedeep-export.json
