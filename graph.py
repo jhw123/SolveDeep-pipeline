@@ -37,11 +37,9 @@ class Graph:
 			self.nodes.append({"index": self.max_index, "nodes": [node], "size": 1})
 		return self.max_index
 
-	def add_node(self, node, head=False):
+	def add_node(self, node):
 		self.max_index += 1
 		self.nodes.append({"index": self.max_index, "nodes": [node], "size": 1})
-		# if(head):
-		# 	self.heads.append(self.max_index)
 		return self.max_index
 
 	def get_edges(self):
@@ -112,47 +110,47 @@ class Graph:
 		ret = [];
 		for idx in lst:
 			for node in nodes:
-				if(int(node.index) == int(idx)):
+				if(int(node["index"]) == int(idx)):
 					ret.append(node)
 		return ret
 
 	def addSequenceToGraph(self, sequence_nodes, sequence_edges, sequence_alignment, graph_alignment):
-	    translation = {}
-	    for i in range(len(sequence_alignment)):
-	    	seq_pattern = sequence_alignment[i]
-	    	graph_pattern = graph_alignment[i]
-	    	is_head = int(seq_pattern) == int(sequence_nodes[0]["index"])
-	    	is_tail = int(seq_pattern) == int(sequence_nodes[-1]["index"])
+		translation = {}
+		for i in range(len(sequence_alignment)):
+			seq_pattern = sequence_alignment[i]
+			graph_pattern = graph_alignment[i]
+			is_head = str(seq_pattern) == str(sequence_nodes[0]["index"])
+			is_tail = str(seq_pattern) == str(sequence_nodes[-1]["index"])
 
 	        # Match: add a subgoal node to an existing cluster
-	        if seq_pattern != "_" and graph_pattern != "_":
-	            seq_node = self.idx_to_node([seq_pattern], sequence_nodes)[0]
-	            if is_head:
-	                self.add_head(int(graph_pattern))
-	            if is_tail:
-	                self.add_tail(int(graph_pattern))
-	            node_group_node = self.get_node(graph_pattern)
-	            
-	            # Check if there exists a duplicate label in the cluster
-	            if not self.checkIfDuplicateLabelExist(seq_node["label"], node_group_node):
-	                node_group_node["nodes"].append(seq_node)
+			if seq_pattern != "_" and graph_pattern != "_":
+				seq_node = self.idx_to_node([seq_pattern], sequence_nodes)[0]
+				if is_head:
+					self.add_head(int(graph_pattern))
+				if is_tail:
+					self.add_tail(int(graph_pattern))
+				node_group_node = self.get_node(graph_pattern)
 
-	            translation[seq_pattern] = graph_pattern
+	            # Check if there exists a duplicate label in the cluster
+				if not self.checkIfDuplicateLabelExist(seq_node["label"], node_group_node):
+					node_group_node["nodes"].append(seq_node)
+
+				translation[seq_pattern] = graph_pattern
 	        # Mismatch: do nothing
-	        elif seq_pattern == "_":
-	            continue
-	        # Insertion: add a subgoal node as an new cluster
-	        else:
-	            seq_node = self.idx_to_node([seq_pattern], sequence_nodes)[0]
-	            new_idx = self.add_node(seq_node)
-	            if is_head:
-	                self.add_head(new_idx)
-	            if is_tail:
-	                self.add_tail(new_idx)
-	            translation[seq_pattern] = str(new_idx)
-	    for edge in edges:
-	        self.add_edge([ int(translation[str(edge[0])]), int(translation[str(edge[1])]) ])
-	    self.n += 1
+			elif seq_pattern == "_":
+				continue
+			# Insertion: add a subgoal node as an new cluster
+			else:
+				seq_node = self.idx_to_node([seq_pattern], sequence_nodes)[0]
+				new_idx = self.add_node(seq_node)
+				if is_head:
+					self.add_head(new_idx)
+				if is_tail:
+					self.add_tail(new_idx)
+				translation[seq_pattern] = str(new_idx)
+		for edge in sequence_edges:
+			self.add_edge([ int(translation[str(edge[0])]), int(translation[str(edge[1])]) ])
+		self.n += 1
 
 	#print all the infomation about this graph
 	def print_nodes(self):
