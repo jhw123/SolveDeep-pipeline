@@ -8,3 +8,5 @@ glove_vectors.txt
 rest-env/
 sftp-config.json
 solvedeep-export.json
+result/
+db.json

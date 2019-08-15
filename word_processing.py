@@ -1,15 +1,11 @@
 # ntlk natural language package for subgoal label comparison
 from nltk.tokenize import word_tokenize
 from nltk.tag import pos_tag
-from nltk.stem import WordNetLemmatizer
+from nltk.stem import WordNetLemmatizer, LancasterStemmer
 lm = WordNetLemmatizer()
+ls = LancasterStemmer()
 
 import math, textdistance
-
-from gensim.models.keyedvectors import KeyedVectors
-print("loading a word2vec model...")
-model = KeyedVectors.load_word2vec_format("./models/glove_vectors.txt", binary=False)
-print("glove_vectors model is loaded successfully")
 
 # Referred from https://nlpforhackers.io/convert-words-between-forms/ 
 from nltk.corpus import wordnet as wn
@@ -58,18 +54,4 @@ def convertPOS(word, from_pos, to_pos):
 
 SEMANTIC_EQUAL_THRESHOLD = 0.6
 def wordSemanticEqual(word1, word2):
-	# This is to correctly compare same word in different forms. e.g. substitution & substitute
-	if textdistance.hamming.normalized_similarity(word1, word2) > 0.5:
-		return True
-	else:
-	    try:    # Exception occurs when one of parameter words are not in the model
-	        if model.similarity(word1, word2) > SEMANTIC_EQUAL_THRESHOLD:
-	            return True
-	        else:
-	            return False
-	    except Exception as e:
-	    	# print(e, word1, word2)	# This often prints out keyError. e.g. KeyError("word 'u=x+2' not in vocabulary"
-	        if(word1 == word2):
-	            return True
-	        else:
-	            return False
+	return ls.stem(word1) == ls.stem(word2)

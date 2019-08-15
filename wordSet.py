@@ -5,6 +5,7 @@ def wordSetIntersection(word_set1, word_set2):
     for word1 in word_set1:
         for word2 in word_set2:
             if wordSemanticEqual(word1, word2):
+                # print(word1, word2)
                 intersection.append(word1)
                 # if(word1 != word2): # Note that both words (if different) are added to the intersection set
                 intersection.append(word2)

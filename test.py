@@ -8,13 +8,13 @@ def checkSubgoalSimilarity(label1, label2, expectation):
 	global TEST_CNT
 
 	TEST_CNT += 1
-	print colored("---TEST ("+str(TEST_CNT)+")---", 'yellow')
+	print(colored("---TEST ("+str(TEST_CNT)+")---", 'yellow'))
 	print("Compare: '"+label1+"' & '"+label2+"'")
 	similarity = computeSubgoalLabelSimilarity({"label": label1}, {"label": label2})
 	if similarity < expectation:
-		print colored("FAIL", 'red'), "- expectation: "+str(expectation)+" actual: "+str(similarity)
+		print(colored("FAIL", 'red'), "- expectation: "+str(expectation)+" actual: "+str(similarity))
 		return False
-	print colored("PASS", 'green'), "- difference: "+str(expectation-similarity)
+	print(colored("PASS", 'green'), "- difference: "+str(expectation-similarity))
 	return True
 
 class CustomTests(unittest.TestCase): 
@@ -28,6 +28,8 @@ class CustomTests(unittest.TestCase):
 						["integrate the function", "integrate the polynomial", 0.5],
 						["substitute variable to simplify expression", "substitute to use substitution integration", 0.5],
 						["replace x using u=x+2", "substitute the variable", 0.5]]
+
+		test_subgoals = [["approach integral using substitution (u=x+2, du=dx)", "use integration by parts", 0.0]]
 		for [label1, label2, expectation] in test_subgoals:
 			checkSubgoalSimilarity(label1, label2, expectation)
 
