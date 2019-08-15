@@ -63,7 +63,7 @@ def findMostSimilarGraphSequence(nodes, edges, G, threshold):
                 max_seq2 = match[1]
     return [max_val, max_seq1, max_seq2]
 
-MATCH_THRESHOLD = 0.2
+MATCH_THRESHOLD = 0.5
 def globalAlignmentScoreFunc(node_idx, node_group_idx, nodes, node_group):
     chosen_nodes = getNodesForIndexes([node_idx], nodes)[0]
     chosen_node_group = getNodesForIndexes([node_group_idx], node_group)[0]["nodes"]
