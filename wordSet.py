@@ -6,9 +6,14 @@ def wordSetIntersection(word_set1, word_set2):
         for word2 in word_set2:
             if wordSemanticEqual(word1, word2):
                 intersection.append(word1)
-                # if(word1 != word2): # Note that both words (if different) are added to the intersection set
+                break
+
+    for word2 in word_set2:
+        for word1 in word_set1:
+            if wordSemanticEqual(word1, word2):
                 intersection.append(word2)
-                # break # break is removed in order to add all similar words in a same word_set
+                break
+
     return intersection
 
 def checkIfWordSetIsSubset(word_set1, word_set2):

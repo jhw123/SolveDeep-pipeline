@@ -7,13 +7,35 @@ from statistics import stdev, variance
 # ntlk natural language package for subgoal label comparison
 from nltk.tokenize import word_tokenize
 from nltk.tag import pos_tag
-from nltk.stem import WordNetLemmatizer
+from nltk.stem import WordNetLemmatizer, LancasterStemmer
 lm = WordNetLemmatizer()
+ls = LancasterStemmer()
+
+import numpy as np
+import scipy
+
+import re
+
+regex = re.compile('[^a-zA-Z]')
 
 # Load the subgoal term weight file
 import json
-with open('./term_weight/term_weight_Oxford17.json') as term_weight_file:    
+useOxford = True
+if useOxford:
+    term_weight_filename = 'term_weight/term_weight_Oxford17.json'
+else:
+    term_weight_filename = 'term_weight/term_weight_label.json'
+with open(term_weight_filename) as term_weight_file:    
     term_weight = json.load(term_weight_file)
+
+def calcTermWeight(term):
+    try:
+        if useOxford:
+            return term_weight[ls.stem(term)] + 1
+        else:
+            return term_weight[term]
+    except Exception as e:
+        return 4.0
 
 def findTargetSimilarityGraphSequence(nodes, edgs, G, threshold, targetSimilarity=2.0):
     node_group_idx = G.get_idxs()
@@ -32,7 +54,7 @@ def findTargetSimilarityGraphSequence(nodes, edgs, G, threshold, targetSimilarit
             continue
         for subsequence in node_group_subsequences:
             match = alignGlobal(nodes_idx, subsequence, globalAlignmentScoreFunc, nodes, G.get_nodes())
-            print(match[2])
+            #print(match[2])
             if(abs(match[2] - targetSimilarity) < min_diff):
                 min_diff = abs(match[2] - targetSimilarity)
                 min_seq1 = match[0]
@@ -56,11 +78,28 @@ def findMostSimilarGraphSequence(nodes, edges, G, threshold):
             continue
         for subsequence in node_group_subsequences:
             match = alignGlobal(nodes_idx, subsequence, globalAlignmentScoreFunc, nodes, G.get_nodes())
-            print(match[2])
+            #print(match[2])
             if(match[2] > max_val):
                 max_val = match[2]
                 max_seq1 = match[0]
                 max_seq2 = match[1]
+
+    print("------------------------")
+    print("max_val: ", max_val)
+    for i in range(len(max_seq1)):
+        print("-------")
+        if max_seq1[i] != '_':
+            print("seq1: ", nodes[int(max_seq1[i])]['label'], nodes[int(max_seq1[i])]['steps'])
+        else:
+            print("seq1: _")
+
+        if max_seq2[i] != '_':
+            graph_node = G.get_node(int(max_seq2[i]))
+            for j in range(len(graph_node['nodes'])):
+                print("seq2: ", graph_node['nodes'][j]['label'], graph_node['nodes'][j]['steps'])
+        else:
+            print("seq2: _")
+
     return [max_val, max_seq1, max_seq2]
 
 MATCH_THRESHOLD = 0.5
@@ -68,10 +107,7 @@ def globalAlignmentScoreFunc(node_idx, node_group_idx, nodes, node_group):
     chosen_nodes = getNodesForIndexes([node_idx], nodes)[0]
     chosen_node_group = getNodesForIndexes([node_group_idx], node_group)[0]["nodes"]
     similarity = computeSimilarityBetweenSubgoalAndCluster(chosen_nodes, chosen_node_group)
-    if(similarity > MATCH_THRESHOLD):
-        return similarity
-    else:
-        return -1 * similarity
+    return similarity - MATCH_THRESHOLD
 
 def computeSimilarityBetweenSubgoalAndCluster(node, nodes):
     score = 0
@@ -81,13 +117,15 @@ def computeSimilarityBetweenSubgoalAndCluster(node, nodes):
         similarities.append(similarity)
         score += pow(similarity, 2)
     score /= len(nodes)
-    print(stdev(similarities))
+    # print(stdev(similarities))
     return score
 
 def convertTagListToNoun(POS_tag_list):
     word_list = []
     for tag in POS_tag_list:
         if "NN" in tag[1]:
+            word_list.append(tag[0])
+        elif "FW" in tag[1]:
             word_list.append(tag[0])
         elif "VB" in tag[1]:
             word_list.append(tag[0])
@@ -103,6 +141,21 @@ def convertTagListToNoun(POS_tag_list):
             #     word_list.append(tag[0])
     return word_list
 
+def subgoalTokenizer(s):
+    POS_tag_list = pos_tag(word_tokenize(s))
+    word_list = convertTagListToNoun(POS_tag_list)
+
+    # return [lm.lemmatize(regex.sub(' ', w)) for w in word_list if w.replace('\'', '').isalpha()]
+
+    word_set = []
+    for w in word_list:
+        if w.replace('\'', '').isalpha():
+            if '\'' in w:
+                word_set += subgoalTokenizer(regex.sub(' ', w))
+            else:
+                word_set.append(lm.lemmatize(w))
+    return word_set
+
 def computeSubgoalLabelSimilarity(node1, node2):
     score = 0
 
@@ -110,28 +163,15 @@ def computeSubgoalLabelSimilarity(node1, node2):
     if(node1["label"] == node2["label"]):
         return 1.0
 
-    # Extract nouns(NN), verbs(VB) and adjective(JJ), and convert them to their noun forms
-    node1_POS_tag_list = pos_tag(word_tokenize(node1["label"]))
-    node2_POS_tag_list = pos_tag(word_tokenize(node2["label"]))
-    node1_word_list = convertTagListToNoun(node1_POS_tag_list)
-    node2_word_list = convertTagListToNoun(node2_POS_tag_list)
-
-    # Convert the nouns and verbs to their original forms
-    node1_word_set = [lm.lemmatize(w) for w in node1_word_list]
-    node2_word_set = [lm.lemmatize(w) for w in node2_word_list]
-    # print(node1_word_set, node2_word_set)
+    node1_word_set = subgoalTokenizer(node1["label"])
+    node2_word_set = subgoalTokenizer(node2["label"])
 
     # Find the intersection of word sets
     intersection = wordSetIntersection(node1_word_set, node2_word_set)
     # print("Intersection", intersection)
     for word in intersection:
-        try:
-            score += term_weight[word]
-        except Exception as e:
-            # print(e)
-            score += 3.0    # add 3.0 for a term that is not in the term_weight. we add high score because being not
-                            # in the term_weight means the term is not frequently used by others.
-    
+        score += calcTermWeight(word)
+
     # If one wordset is the subset of the other, conclude the labels are the same
     if (checkIfWordSetIsSubset(node1_word_set, intersection) 
         or checkIfWordSetIsSubset(node2_word_set, intersection)):
@@ -140,15 +180,10 @@ def computeSubgoalLabelSimilarity(node1, node2):
     # Find the maximum score possible for normalization
     max_score = 0
     for word in node1_word_set:
-        try:
-            max_score += term_weight[word]
-        except Exception as e:
-            max_score += 3.0
+        max_score += calcTermWeight(word)
     for word in node2_word_set:
-        try:
-            max_score += term_weight[word]
-        except Exception as e:
-            max_score += 3.0
+        max_score += calcTermWeight(word)
+    assert(score <= max_score)
     return score/max_score
 
 def getIndexesOfNodes(node_array):

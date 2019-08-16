@@ -25,11 +25,17 @@ class Graph:
 
 	def add_edges(self, edge_lst):
 		for edge in edge_lst:
-			self.edges.append([int(edge[0]), int(edge[1])])
+			add_edge(edge)
+			#self.edges.append([int(edge[0]), int(edge[1])])
 
 	def add_edge(self, edge):
-		self.edges.append([int(edge[0]), int(edge[1])])
-		self.unique_edges()
+		for e in self.edges:
+			if e[0] == edge[0] and e[1] == edge[1]:
+				e[2] += 1
+				return
+		self.edges.append([int(edge[0]), int(edge[1]), 1])
+		#self.edges.append([int(edge[0]), int(edge[1])])
+		#self.unique_edges()
 
 	def add_nodes(self, node_lst):
 		for node in node_lst:
@@ -77,8 +83,8 @@ class Graph:
 
 	def get_subsequences(self, idx, threshold=2):
 		ret = []
-		if(self.get_node(idx)["size"] < threshold):
-			return -1
+		#if(self.get_node(idx)["size"] < threshold):
+		#	return -1
 		direct_children = self.get_direct_children(idx);
 		if(len(direct_children) == 0):
 			return [[idx]]
@@ -114,6 +120,12 @@ class Graph:
 					ret.append(node)
 		return ret
 
+	def addWeightToNodes(self, nodes):
+		print(self.nodes)
+		for node in nodes:
+			print(node)
+			node["size"] += 1
+
 	def addSequenceToGraph(self, sequence_nodes, sequence_edges, sequence_alignment, graph_alignment):
 		translation = {}
 		for i in range(len(sequence_alignment)):
@@ -134,12 +146,13 @@ class Graph:
 	            # Check if there exists a duplicate label in the cluster
 				if not self.checkIfDuplicateLabelExist(seq_node["label"], node_group_node):
 					node_group_node["nodes"].append(seq_node)
-
+				
+				node_group_node["size"] += 1
 				translation[seq_pattern] = graph_pattern
 	        # Mismatch: do nothing
 			elif seq_pattern == "_":
 				continue
-			# Insertion: add a subgoal node as an new cluster
+			# Insertion: add a subgoal node as a new cluster
 			else:
 				seq_node = self.idx_to_node([seq_pattern], sequence_nodes)[0]
 				new_idx = self.add_node(seq_node)
@@ -157,7 +170,7 @@ class Graph:
 		print("HEAD:", self.heads)
 		print("TAIL:", self.tails)
 		for node_group in self.nodes:
-			print("#"+str(node_group["index"]))
+			print("#"+str(node_group["index"]) + " (" + str(node_group["size"]) + ")")
 			for node in node_group["nodes"]:
 				print(node["label"])
 		for edge in self.edges:
