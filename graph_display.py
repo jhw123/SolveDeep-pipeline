@@ -26,5 +26,6 @@ weights_adj = [(x-wmin+1)/(wmax-wmin+1)*4+1 for x in weights]
 
 pos = graphviz_layout(G, prog='dot')
 nx.draw(G, pos, with_labels = True, width=weights, node_color = [x for x in nx.get_node_attributes(G,'weight').values()], vmin = min(weight_lst) - max(weight_lst)/2, vmax = max(weight_lst)*2, cmap = plt.cm.get_cmap('Greens'))
-plt.show()
+
 plt.savefig('result/'+sys.argv[1]+'.png')
+plt.show()
