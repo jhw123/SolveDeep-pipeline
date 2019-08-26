@@ -16,6 +16,11 @@ WN_ADJECTIVE = 'a'
 WN_ADJECTIVE_SATELLITE = 's'
 WN_ADVERB = 'r'
 
+from gensim.models.keyedvectors import KeyedVectors
+print("loading a word2vec model...")
+model = KeyedVectors.load_word2vec_format("./models/glove_vectors.txt", binary=False)
+print("glove_vectors model is loaded successfully")
+
 def convertPOS(word, from_pos, to_pos):    
 	synsets = wn.synsets(word, pos=from_pos)
 

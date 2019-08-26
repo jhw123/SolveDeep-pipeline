@@ -104,6 +104,7 @@ class Merge_sequence(Resource):
                     graph_alignment = alignment[2]
                     G.addSequenceToGraph(nodes, edges, seq_alignment, graph_alignment)
                 cnt += 1
+                print(key, len(G.get_nodes()))
 
             G.n = cnt
             G.print_nodes()

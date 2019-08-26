@@ -84,22 +84,6 @@ def findMostSimilarGraphSequence(nodes, edges, G, threshold):
                 max_seq1 = match[0]
                 max_seq2 = match[1]
 
-    print("------------------------")
-    print("max_val: ", max_val)
-    for i in range(len(max_seq1)):
-        print("-------")
-        if max_seq1[i] != '_':
-            print("seq1: ", nodes[int(max_seq1[i])]['label'], nodes[int(max_seq1[i])]['steps'])
-        else:
-            print("seq1: _")
-
-        if max_seq2[i] != '_':
-            graph_node = G.get_node(int(max_seq2[i]))
-            for j in range(len(graph_node['nodes'])):
-                print("seq2: ", graph_node['nodes'][j]['label'], graph_node['nodes'][j]['steps'])
-        else:
-            print("seq2: _")
-
     return [max_val, max_seq1, max_seq2]
 
 MATCH_THRESHOLD = 0.5
