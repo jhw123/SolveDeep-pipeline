@@ -1,13 +1,16 @@
+from seqgraph import Sequence, Graph
 import networkx as nx
 from networkx.drawing.nx_agraph import graphviz_layout
 import matplotlib.pyplot as plt
 import sys
 import json
-import argparse
+
+problemn = 0
 
 sys.argv[1]
-with open('result/'+sys.argv[1]+'.json') as result_file:    
-    result = json.load(result_file)
+with open('result/result_'+sys.argv[1]+'.json') as result_file:
+	result = json.load(result_file)
+
 
 G = nx.DiGraph()
 
@@ -30,3 +33,25 @@ nx.draw(G, pos, with_labels = True, width=weights, node_color = [x for x in nx.g
 
 plt.savefig('result/'+sys.argv[1]+'.png')
 plt.show()
+
+
+def showLabels():
+
+
+def showCommand():
+	print("Available commends:")
+
+
+def main():
+	global problemn
+	parser = argparse.ArgumentParser()
+	parser.add_argument('-n', type=int)
+	args = parser.parse_args()
+	problemn = args.n
+	while True:
+		showCommand()
+
+
+
+if __name__ == "__main__":
+	main()

@@ -80,7 +80,7 @@ class Merge_sequence(Resource):
             sequences = db.child(topic+"/problems/"+problem_num+"/sequences").get().val()
 
             cnt = 0
-            G = Graph({"max_index": -1, "nodes": [], "edges": [], "heads": [], "tails": [], "n": cnt})
+            G = Graph({"max_index": -1, "nodes": [], "edges": [], "heads": [], "tails": [], "n": cnt, "sequences": []})
 
             for key in sorted(sequences.keys()):
                 nodes = sequences[key]["nodes"]
@@ -89,9 +89,12 @@ class Merge_sequence(Resource):
                 else:
                     edges = []
 
+                sequence = {}
+
                 if(cnt == 0):
                     for node in nodes:
                         new_idx = G.add_node(node)
+                        sequence[new_idx] = new_idx
                         if (nodes.index(node)) == 0:
                             G.add_head(new_idx)
                         elif (nodes.index(node)) == len(nodes):
@@ -102,8 +105,9 @@ class Merge_sequence(Resource):
                     alignment = findMostSimilarGraphSequence(nodes, edges, G, 1)
                     seq_alignment = alignment[1]
                     graph_alignment = alignment[2]
-                    G.addSequenceToGraph(nodes, edges, seq_alignment, graph_alignment)
+                    sequence = G.addSequenceToGraph(nodes, edges, seq_alignment, graph_alignment)
                 cnt += 1
+                G.add_sequence(sequence)
                 print(key, len(G.get_nodes()))
 
             G.n = cnt
