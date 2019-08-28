@@ -94,7 +94,9 @@ class Merge_sequence(Resource):
                 if(cnt == 0):
                     for node in nodes:
                         new_idx = G.add_node(node)
-                        sequence[new_idx] = new_idx
+                        sequence[new_idx] = {}
+                        sequence[new_idx]["index"] = new_idx
+                        sequence[new_idx]["node"] = node
                         if (nodes.index(node)) == 0:
                             G.add_head(new_idx)
                         elif (nodes.index(node)) == len(nodes):
@@ -107,6 +109,7 @@ class Merge_sequence(Resource):
                     graph_alignment = alignment[2]
                     sequence = G.addSequenceToGraph(nodes, edges, seq_alignment, graph_alignment)
                 cnt += 1
+                print(sequence)
                 G.add_sequence(sequence)
                 print(key, len(G.get_nodes()))
 

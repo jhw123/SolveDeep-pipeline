@@ -134,6 +134,7 @@ class Graph:
 
 	def addSequenceToGraph(self, sequence_nodes, sequence_edges, sequence_alignment, graph_alignment):
 		translation = {}
+		sequence = {}
 		for i in range(len(sequence_alignment)):
 			seq_pattern = sequence_alignment[i]
 			graph_pattern = graph_alignment[i]
@@ -155,6 +156,9 @@ class Graph:
 				
 				node_group_node["size"] += 1
 				translation[seq_pattern] = graph_pattern
+				sequence[seq_pattern] = {}
+				sequence[seq_pattern]["index"] = int(graph_pattern)
+				sequence[seq_pattern]["node"] = seq_node
 	        # Mismatch: do nothing
 			elif seq_pattern == "_":
 				continue
@@ -167,10 +171,13 @@ class Graph:
 				if is_tail:
 					self.add_tail(new_idx)
 				translation[seq_pattern] = str(new_idx)
+				sequence[seq_pattern] = {}
+				sequence[seq_pattern]["index"] = new_idx
+				sequence[seq_pattern]["node"] = seq_node
 		for edge in sequence_edges:
 			self.add_edge([ int(translation[str(edge[0])]), int(translation[str(edge[1])]) ])
 		self.n += 1
-		return translation
+		return sequence
 
 	#print all the infomation about this graph
 	def print_nodes(self):

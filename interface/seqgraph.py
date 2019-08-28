@@ -1,22 +1,24 @@
-import json
-
-with open('result/result_'+problemn+'.json') as result_file:
-	result = json.load(result_file)
-
 class Sequence:
-	def __init__(self):
-		self.sequences = []
-		self.n = 0
+	def __init__(self, snapshot):
+		self.sequences = snapshot["sequence"]
+		self.n = snapshot["n"]
 	
 	def getSeq(self, index):
-		if index > 
-		return sequences[index]
+		return self.sequences[index]
+
+	def getSeqIndices(self, index):
+		sequence = self.getSeq(index)
+		l = []
+		for i in range(len(sequence)):
+			l.append(sequence[str(i)]['index'])
+		return l
 
 	def getLastSeq(self):
-		if n == 0:
+		if self.n == 0:
 			return []
-		return getSeq(n)
+		return self.getSeq(self.n)
 
 
 class Graph:
 	def __init__(self):
+		n = 0

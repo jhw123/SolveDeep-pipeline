@@ -4,53 +4,150 @@ from networkx.drawing.nx_agraph import graphviz_layout
 import matplotlib.pyplot as plt
 import sys
 import json
+import argparse
+from matplotlib.widgets import TextBox, Button
 
-problemn = 0
+result = {}
+cur_idx = 20
+DG = nx.DiGraph()
 
-sys.argv[1]
-with open('result/result_'+sys.argv[1]+'.json') as result_file:
-	result = json.load(result_file)
+class Index(object):
+	def prev(self, event):
+		global cur_idx
+		plt.cla()
+		cur_idx -= 1
+		if cur_idx < 0:
+			cur_idx = 0
+		else:
+			drawGraph("-1")
 
+	def next(self, event):
+		global cur_idx
+		plt.cla()
+		cur_idx += 1
+		if cur_idx > 20:
+			cur_idx = 20
+		else:
+			drawGraph("+1")
 
-G = nx.DiGraph()
+	def submit(self, text):
+		plt.cla()
+		drawGraph("new")
+		student_num = int(text)
+		l = Seq.getSeqIndices(student_num)
+		l_edges = list(zip(l,l[1:]))
+		pos = graphviz_layout(DG, prog='dot')
+		nx.draw_networkx_nodes(DG,pos,nodelist=l,node_color='r')
+		nx.draw_networkx_edges(DG,pos,edgelist=l_edges,edge_color='r')
 
-for edge in result["edges"]:
-	G.add_edge(edge[0], edge[1], weight=edge[2])
+def cleanZero(l):
+	global DG
+	for (x, y) in list(zip(l,l[1:])):
+		DG.remove_edge(x, y)
 
-for node_group in result["nodes"]:
-	G.node[node_group["index"]]['weight'] = node_group["size"]
+	for x in l:
+		if DG.degree[x] == 0:
+			DG.remove_node(x)
 
-weight_lst = list(nx.get_node_attributes(G,'weight').values())
+def drawGraph(option):
+	global cur_idx
+	global problem_num
+	global ax
+	global DG
 
-edges = G.edges()
-weights = [G[u][v]['weight'] for u,v in edges]
-wmax = max(weights)
-wmin = min(weights)
-weights_adj = [(x-wmin+1)/(wmax-wmin+1)*4+1 for x in weights]
+	if option == "+1":
+		l = Seq.getSeqIndices(cur_idx)
+		for i in range(len(l) - 1):
+			if (l[i], l[i+1]) in DG.edges():
+				DG[l[i]][l[i+1]]['weight'] += 1
+			else:
+				DG.add_edge(l[i], l[i+1], weight=1)
 
-pos = graphviz_layout(G, prog='dot')
-nx.draw(G, pos, with_labels = True, width=weights, node_color = [x for x in nx.get_node_attributes(G,'weight').values()], vmin = min(weight_lst) - max(weight_lst)/2, vmax = max(weight_lst)*2, cmap = plt.cm.get_cmap('Greens'))
+			if 'weight' in DG.node[l[i+1]]:
+				DG.node[l[i+1]]['weight'] += 1
+			else:
+				DG.node[l[i+1]]['weight'] = 1
 
-plt.savefig('result/'+sys.argv[1]+'.png')
-plt.show()
+		if 'weight' in DG.node[l[0]]:
+			DG.node[l[0]]['weight'] += 1
+		else:
+			DG.node[l[0]]['weight'] = 1
+	elif option == "-1":
+		l = Seq.getSeqIndices(cur_idx + 1)
+		for i in range(len(l) - 1):
+			DG[l[i]][l[i+1]]['weight'] -= 1
+			DG.node[l[i+1]]['weight'] -= 1
+		
+		DG.node[l[0]]['weight'] -= 1
+		cleanZero(l)
+	elif option == "new":
+		DG.clear()
+		for student_num in range(cur_idx + 1):
+			l = Seq.getSeqIndices(student_num)
+			for i in range(len(l) - 1):
+				if (l[i], l[i+1]) in DG.edges():
+					DG[l[i]][l[i+1]]['weight'] += 1
+				else:
+					DG.add_edge(l[i], l[i+1], weight=1)
 
+				if 'weight' in DG.node[l[i+1]]:
+					DG.node[l[i+1]]['weight'] += 1
+				else:
+					DG.node[l[i+1]]['weight'] = 1
 
-def showLabels():
+			if 'weight' in DG.node[l[0]]:
+				DG.node[l[0]]['weight'] += 1
+			else:
+				DG.node[l[0]]['weight'] = 1
 
+	weight_lst = list(nx.get_node_attributes(DG,'weight').values())
 
-def showCommand():
-	print("Available commends:")
+	edges = DG.edges()
+	weights = [DG[u][v]['weight'] for u,v in edges]
+	wmax = max(weights)
+	wmin = min(weights)
+	weights_adj = [(x-wmin+1)/(wmax-wmin+1)*4+1 for x in weights]
+
+	pos = graphviz_layout(DG, prog='dot', args="-splines=curve")
+	nx.draw(DG, pos, ax=ax, with_labels = True, width=weights, node_color = [x for x in nx.get_node_attributes(DG,'weight').values()], vmin = min(weight_lst) - max(weight_lst)/2, vmax = max(weight_lst)*2, cmap = plt.cm.get_cmap('Greens'))
+
+def showUI():
+	global ax
+	fig, ax = plt.subplots()
+	callback = Index()
+	#axtextbox = plt.axes([0.3, 0.05, 0.3, 0.075])
+	axprev = plt.axes([0.7, 0.05, 0.1, 0.075])
+	axnext = plt.axes([0.81, 0.05, 0.1, 0.075])
+
+	#textbox = TextBox(axtextbox, 'Student number')
+	#textbox.on_submit(callback.submit)
+	bprev = Button(axprev, 'Previous')
+	bprev.on_clicked(callback.prev)
+	bnext = Button(axnext, 'Next')
+	bnext.on_clicked(callback.next)
+	plt.sca(ax)
+	drawGraph("new")
+	plt.show()
+
+def init():
+	global Seq
+	Seq = Sequence({"sequence": result["sequences"], "n": 20})
+	showUI()
 
 
 def main():
-	global problemn
+	global result
+	global problem_num
 	parser = argparse.ArgumentParser()
 	parser.add_argument('-n', type=int)
 	args = parser.parse_args()
-	problemn = args.n
-	while True:
-		showCommand()
+	problem_num = args.n
 
+	with open('result/result_'+str(problem_num)+'.json') as result_file:
+		result = json.load(result_file)
+	init()
+	#while True:
+	#	showCommand()
 
 
 if __name__ == "__main__":
