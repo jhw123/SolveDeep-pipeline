@@ -2,6 +2,18 @@ class Sequence:
 	def __init__(self, snapshot):
 		self.sequences = snapshot["sequence"]
 		self.n = snapshot["n"]
+
+	def getMaxIdx(self):
+		sequences = self.getSeqs()
+		l = []
+		max_idx = 0
+		for student_num in range(len(sequences)):
+			sequence = sequences[student_num]
+			for i in range(len(sequence)):
+				if sequence[str(i)]['index'] > max_idx:
+					max_idx = sequence[str(i)]['index']
+
+		return max_idx
 	
 	def getSeq(self, index):
 		return self.sequences[index]
@@ -27,15 +39,7 @@ class Sequence:
 					break
 		return l
 
-	def getLastSeq(self):
-		if self.n == 0:
-			return []
-		return self.getSeq(self.n)
-
-	def updateSequences(self, cur_idx):
-		return None
-
-	def mergeNodes(self, index1, index2, cur_idx):
+	def mergeNodes(self, index1, index2):
 		if index1 > index2:
 			(index1, index2) = (index2, index1)
 
@@ -47,4 +51,9 @@ class Sequence:
 				if sequence[str(i)]['index'] == index2:
 					sequence[str(i)]['index'] = index1
 
-		self.updateSequences(cur_idx)
+	def separateLabel(self, node_idx, student_num):
+		sequences = self.getSeqs()
+		sequence = sequences[student_num]
+		for i in range(len(sequence)):
+			if sequence[str(i)]['index'] == node_idx:
+				sequence[str(i)]['index'] = self.getMaxIdx() + 1

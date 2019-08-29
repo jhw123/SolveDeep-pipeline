@@ -9,10 +9,9 @@ import json
 import argparse
 from matplotlib.widgets import TextBox, Button
 from ast import literal_eval
-from graphAlignOperation import *
 
 result = {}
-cur_idx = 10
+cur_idx = 20
 DG = nx.DiGraph()
 
 class Index(object):
@@ -43,22 +42,33 @@ class Index(object):
 
 	def submitShowLabel(self, text):
 		student_num = int(text)
+		print("----------------"+text+"----------------")
 		labels = Seq.getNodeLabels(student_num)
+		t = ''
 		for label in labels:
-			print(label)
+			if cur_idx >= label[0]:
+				print(label)
 
 	def submitMerge(self, text):
 		ind = literal_eval(text)
-		Seq.mergeNodes(ind[0], ind[1], cur_idx)
+		Seq.mergeNodes(ind[0], ind[1])
 		drawGraph("new")
+
+	def submitSeparate(self, text):
+		ind = literal_eval(text)
+		Seq.separateLabel(ind[0], ind[1])
+		drawGraph("new")
+
+	def removeTroll(self, text):
+		student_num = int(text)
 
 def cleanZero(l):
 	global DG
-	for (x, y) in list(zip(l,l[1:])):
-		DG.remove_edge(x, y)
+	#for (x, y) in list(zip(l,l[1:])):
+	#	DG.remove_edge(x, y)
 
 	for x in l:
-		if DG.degree[x] == 0:
+		if DG.node[x]['weight'] == 0:
 			DG.remove_node(x)
 
 def drawGraph(option):
@@ -130,9 +140,10 @@ def showUI():
 	fig, ax = plt.subplots()
 	callback = Index()
 	num_text = plt.text(0, 0, str(cur_idx))
-	axtextbox_highlight = plt.axes([0.3, 0.05, 0.05, 0.075])
-	axtextbox_showlabel = plt.axes([0.4, 0.05, 0.05, 0.075])
-	axtextbox_merge = plt.axes([0.5, 0.05, 0.05, 0.075])
+	axtextbox_highlight = plt.axes([0.2, 0.05, 0.05, 0.075])
+	axtextbox_showlabel = plt.axes([0.3, 0.05, 0.05, 0.075])
+	axtextbox_merge = plt.axes([0.4, 0.05, 0.05, 0.075])
+	axtextbox_separate = plt.axes([0.5, 0.05, 0.05, 0.075])
 	axprev = plt.axes([0.7, 0.05, 0.1, 0.075])
 	axnext = plt.axes([0.81, 0.05, 0.1, 0.075])
 
@@ -144,6 +155,10 @@ def showUI():
 
 	textbox_merge = TextBox(axtextbox_merge, 'Merge')
 	textbox_merge.on_submit(callback.submitMerge)
+
+	textbox_separate = TextBox(axtextbox_separate, 'Separate')
+	textbox_separate.on_submit(callback.submitSeparate)
+
 	bprev = Button(axprev, 'Previous')
 	bprev.on_clicked(callback.prev)
 	bnext = Button(axnext, 'Next')
