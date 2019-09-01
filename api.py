@@ -84,14 +84,14 @@ class Merge_sequence(Resource):
 
             for key in sorted(sequences.keys()):
                 nodes = sequences[key]["nodes"]
-                if("edges" in sequences[key]):
+                if "edges" in sequences[key]:
                     edges = sequences[key]["edges"]
                 else:
                     edges = []
 
                 sequence = {}
 
-                if(cnt == 0):
+                if cnt == 0:
                     for node in nodes:
                         new_idx = G.add_node(node)
                         sequence[new_idx] = {}
@@ -109,9 +109,10 @@ class Merge_sequence(Resource):
                     graph_alignment = alignment[2]
                     sequence = G.addSequenceToGraph(nodes, edges, seq_alignment, graph_alignment)
                 cnt += 1
-                print(sequence)
                 G.add_sequence(sequence)
                 print(key, len(G.get_nodes()))
+                if cnt == 11:
+                    break
 
             G.n = cnt
             G.print_nodes()
