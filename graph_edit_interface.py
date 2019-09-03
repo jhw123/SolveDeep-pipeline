@@ -1,21 +1,24 @@
 import matplotlib
-from matplotlib import rc
 matplotlib.use("GTK3Agg")
 from seqgraph import Sequence
 import networkx as nx
 from networkx.drawing.nx_agraph import graphviz_layout
 import matplotlib.pyplot as plt
+import matplotlib.gridspec
 import sys
 import json
 import argparse
 from matplotlib.widgets import TextBox, Button
 from ast import literal_eval
+import os.path
 
 result = {}
 pos = {}
 cur_idx = 20
 max_idx = 20
 DG = nx.DiGraph()
+
+gs = matplotlib.gridspec.GridSpec(3, 3, width_ratios=[1, 10, 1], height_ratios=[1, 10, 1])
 
 class Index(object):
 	def prev(self, event):
@@ -45,16 +48,17 @@ class Index(object):
 
 	def submitMerge(self, text):
 		ind = literal_eval(text)
-		Seq.mergeNodes(ind[0], ind[1])
+		new_indices = Seq.mergeNodes(ind)
 		drawGraph("new")
+		pos = graphviz_layout(DG, prog='dot')
+		nx.draw_networkx_nodes(DG,pos,nodelist=new_indices,node_color='r')
 
 	def submitSeparate(self, text):
 		ind = literal_eval(text)
-		Seq.separateLabel(ind[0], ind[1])
+		new_indices = Seq.separateLabel(ind[0], ind[1])
 		drawGraph("new")
-
-	def removeTroll(self, text):
-		student_num = int(text)
+		pos = graphviz_layout(DG, prog='dot')
+		nx.draw_networkx_nodes(DG,pos,nodelist=new_indices,node_color='r')
 
 	def updateAnnotation(self, index):
 		global fig
@@ -68,31 +72,70 @@ class Index(object):
 			if cur_idx >= label[0]:
 				text += "Student " + str(label[0]) + ": " + label[1] + '\n'
 				for step in label[2]:
-					text += '    . ' + step+'\n'
+					text += '  . ' + step+'\n'
 
 		annot.set_text(text.rstrip())
 		annot.set_visible(True)
 		fig.canvas.draw_idle()
 		box = annot.get_window_extent()
-		print(ax.transData.inverted().transform(box))
 
-	def showLabels(self, event):
+	def onClick(self, event):
 		(x,y) = (event.xdata, event.ydata)
 		if not isinstance(x, float) or not isinstance(y, float):
 			return
 
-		minind = 0
-		mindist = -1
+		# Clicked node
 		for i in pos.keys():
-			dist = pow(x - pos[i][0], 2) + pow(y - pos[i][1], 2)
-			if mindist > dist or mindist == -1:
-				mindist = dist
-				minind = i
-			if dist < 20:
+			dist = (x - pos[i][0]) ** 2 + (y - pos[i][1]) ** 2
+			if dist < 40:
 				self.updateAnnotation(i)
 				return
+
 		annot.set_visible(False)
-		#print(minind, mindist)
+
+		# Clicked edge
+		for edge in DG.edges():
+			if edgeClick((x, y), edge) == True:
+				l = []
+				l_edges = []
+				for student_num in range(cur_idx + 1):
+					sequence = Seq.getSeqIndices(student_num)
+					for i in range(len(sequence) - 1):
+						if sequence[i] == edge[0] and sequence[i + 1] == edge[1]:
+							l = list(set(l + sequence))
+							l_edges = list(set(l_edges + list(zip(sequence,sequence[1:]))))
+							break
+				
+				drawGraph("new")
+				nx.draw_networkx_nodes(DG,pos,nodelist=set(l),node_color='r')
+				nx.draw_networkx_edges(DG,pos,edgelist=set(l_edges),edge_color='r')
+				return
+		
+
+def edgeClick(point, edge):
+	(x0, y0) = pos[edge[0]]
+	(x1, y1) = pos[edge[1]]
+	(xp, yp) = point
+
+	dx = x1 - x0
+	dy = y1 - y0
+	dr2 = float(dx ** 2 + dy ** 2)
+
+	lerp = ((xp - x0) * dx + (yp - y0) * dy) / dr2
+	if lerp < 0:
+		lerp = 0
+	elif lerp > 1:
+		lerp = 1
+
+	x = lerp * dx + x0
+	y = lerp * dy + y0
+
+	_dx = x - xp
+	_dy = y - yp
+	square_dist = _dx ** 2 + _dy ** 2
+	if square_dist < 20:
+		return True
+	return False
 
 def cleanZero(l):
 	global DG
@@ -104,7 +147,7 @@ def cleanZero(l):
 			DG.remove_node(x)
 
 def drawGraph(option):
-	global cur_idx, problem_num
+	global cur_idx, problem_num, experiment_id
 	global fig, ax
 	global DG
 	global annot
@@ -155,6 +198,7 @@ def drawGraph(option):
 				DG.node[l[0]]['weight'] += 1
 			else:
 				DG.node[l[0]]['weight'] = 1
+		saveGraph(experiment_id)
 
 	weight_lst = list(nx.get_node_attributes(DG,'weight').values())
 
@@ -173,7 +217,8 @@ def drawGraph(option):
 def refresh():
 	global ax, annot
 	plt.cla()
-	ax = fig.add_subplot(1,1,1)
+	plt.axis('off')
+	ax = fig.add_subplot(gs[1, 1])
 
 	annot = ax.annotate("", xy=(0,0), bbox=dict(boxstyle='round,pad=0.2', fc='yellow'))
 	annot.set_visible(False)
@@ -185,12 +230,12 @@ def showUI():
 	refresh()
 
 	callback = Index()
-	fig.canvas.mpl_connect('button_press_event', callback.showLabels)
-	axtextbox_highlight = plt.axes([0.2, 0.05, 0.05, 0.025])
-	axtextbox_merge = plt.axes([0.3, 0.05, 0.05, 0.025])
-	axtextbox_separate = plt.axes([0.4, 0.05, 0.05, 0.025])
-	axprev = plt.axes([0.7, 0.05, 0.1, 0.025])
-	axnext = plt.axes([0.81, 0.05, 0.1, 0.025])
+	fig.canvas.mpl_connect('button_press_event', callback.onClick)
+	axtextbox_highlight = plt.axes([0.2, 0.05, 0.05, 0.05])
+	axtextbox_merge = plt.axes([0.3, 0.05, 0.05, 0.05])
+	axtextbox_separate = plt.axes([0.4, 0.05, 0.05, 0.05])
+	axprev = plt.axes([0.65, 0.05, 0.075, 0.05])
+	axnext = plt.axes([0.75, 0.05, 0.075, 0.05])
 
 	textbox_highlight = TextBox(axtextbox_highlight, 'Student #')
 	textbox_highlight.on_submit(callback.submitHighlight)
@@ -220,18 +265,30 @@ def init():
 
 def main():
 	global result
-	global problem_num
+	global problem_num, experiment_id
 	parser = argparse.ArgumentParser()
 	parser.add_argument('-n', type=int)
+	parser.add_argument('-id', type=int)
 	args = parser.parse_args()
 	problem_num = args.n
+	experiment_id = args.id
 
 	with open('result/result_'+str(problem_num)+'.json') as result_file:
 		result = json.load(result_file)
-	init()
-	#while True:
-	#	showCommand()
 
+	if os.path.isfile('experiment/result_'+str(experiment_id)+'_'+str(problem_num)):
+		with open('experiment/result_'+str(experiment_id)+'_'+str(problem_num)) as backup_file:
+			backup = json.load(backup_file)
+		for i in range(len(backup)):
+			for j in range(len(backup[i])):
+				result['sequences'][i][str(j)]['index'] = backup[i][str(j)]['index']
+
+	init()
+	saveGraph(experiment_id)
+
+def saveGraph(experiment_id):
+	with open('experiment/result_'+str(experiment_id)+'_'+str(problem_num), 'w') as outfile:
+		json.dump(Seq.getSeqs(), outfile, indent=4)
 
 if __name__ == "__main__":
 	main()

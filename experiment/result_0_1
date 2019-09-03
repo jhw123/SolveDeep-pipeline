@@ -1,0 +1,981 @@
+[
+    {
+        "0": {
+            "index": 0,
+            "node": {
+                "index": "0",
+                "label": "approach integral using substitution (u=x+2, du=dx)",
+                "noun": "integral using substitution (u=x+2, du=dx)",
+                "steps": [
+                    "substituting\\ u=x+2",
+                    "du=dx"
+                ],
+                "type": "subgoal",
+                "verb": "approach"
+            }
+        },
+        "1": {
+            "index": 1,
+            "node": {
+                "index": "1",
+                "label": "solve indefinite integral for u",
+                "noun": "indefinite integral for u",
+                "steps": [
+                    "\\int\\left(u-2\\right)u^3du",
+                    "=\\frac{1}{5}u^5-\\frac{1}{2}u^4\\left(+c\\right)"
+                ],
+                "type": "subgoal",
+                "verb": "solve"
+            }
+        },
+        "2": {
+            "index": 2,
+            "node": {
+                "index": "2",
+                "label": "replace x using u=x+2",
+                "noun": "x using u=x+2",
+                "steps": [
+                    "=\\frac{1}{5}\\left(x+2\\right)^5-\\frac{1}{2}\\left(x+2\\right)^4\\left(+c\\right)"
+                ],
+                "type": "subgoal",
+                "verb": "replace"
+            }
+        },
+        "3": {
+            "index": 3,
+            "node": {
+                "index": "3",
+                "label": "solve definite integral",
+                "noun": "definite integral",
+                "steps": [
+                    "\\left|\\frac{1}{5}\\left(x+2\\right)^5-\\frac{1}{2}\\left(x+2\\right)^4\\right|_{-2}^{-1}=-0.3"
+                ],
+                "type": "subgoal",
+                "verb": "solve"
+            }
+        }
+    },
+    {
+        "0": {
+            "index": 0,
+            "node": {
+                "index": "0",
+                "label": "substitute variable to simplify expression",
+                "noun": "variable to simplify expression",
+                "steps": [
+                    "\\int_0^1\\left(g-2\\right)g^3dg^{ }",
+                    "\\int_0^1g^4-2g^3dg"
+                ],
+                "type": "subgoal",
+                "verb": "substitute"
+            }
+        },
+        "1": {
+            "index": 3,
+            "node": {
+                "index": "1",
+                "label": "solve definite integral",
+                "noun": "definite integral",
+                "steps": [
+                    "\\left[\\frac{1}{5}g^5-\\frac{2}{4}g^4\\right]_0^1"
+                ],
+                "type": "subgoal",
+                "verb": "solve"
+            }
+        }
+    },
+    {
+        "0": {
+            "index": 0,
+            "node": {
+                "index": "0",
+                "label": "substitute variable to simplify expression",
+                "noun": "variable to simplify expression",
+                "steps": [
+                    "Rewrite\\ the\\ integral\\ in\\ terms\\ of\\ g\\ by\\ letting\\ g\\ equal\\ x\\ +\\ 2"
+                ],
+                "type": "subgoal",
+                "verb": "substitute"
+            }
+        },
+        "1": {
+            "index": 5,
+            "node": {
+                "index": "1",
+                "label": "expand the expression",
+                "noun": "the expression",
+                "steps": [
+                    "Expand\\ the\\ integrand"
+                ],
+                "type": "subgoal",
+                "verb": "expand"
+            }
+        },
+        "2": {
+            "index": 3,
+            "node": {
+                "index": "2",
+                "label": "integrate the function",
+                "noun": "the function",
+                "steps": [
+                    "Integrate\\ in\\ terms\\ of\\ g"
+                ],
+                "type": "subgoal",
+                "verb": "integrate"
+            }
+        }
+    },
+    {
+        "0": {
+            "index": 0,
+            "node": {
+                "index": "0",
+                "label": "integrate using integration by parts",
+                "noun": "using integration by parts",
+                "steps": [
+                    "\\int_{-2}^{-1}x\\left(x+2\\right)^3dx\\ =\\ \\left[\\frac{x\\left(x+2\\right)^4}{4}\\right]_{-2}^{-1}-\\int_{-2}^{-1}\\frac{\\left(x+2\\right)^4}{4}dx"
+                ],
+                "type": "subgoal",
+                "verb": "integrate"
+            }
+        },
+        "1": {
+            "index": 11,
+            "node": {
+                "index": "1",
+                "label": "calculate the solution with integration",
+                "noun": "the solution with integration",
+                "steps": [
+                    "=-\\frac{1}{4}-\\left[\\frac{\\left(x+2\\right)^5}{20}\\right]_{-2}^{-1}",
+                    "=-\\frac{1}{4}\\ -\\frac{1}{20}",
+                    "=\\ -\\frac{3}{10}"
+                ],
+                "type": "subgoal",
+                "verb": "calculate"
+            }
+        }
+    },
+    {
+        "0": {
+            "index": 9,
+            "node": {
+                "index": "0",
+                "label": "think about whether x or (x+2)^3 would be better as dv",
+                "noun": "about whether x or (x+2)^3 would be better as dv",
+                "steps": [
+                    "Convert\\ \\left(x+2\\right)^3\\ to\\ dv"
+                ],
+                "type": "subgoal",
+                "verb": "think"
+            }
+        },
+        "1": {
+            "index": 10,
+            "node": {
+                "index": "1",
+                "label": "look at integration by parts formula",
+                "noun": "at integration by parts formula",
+                "steps": [
+                    "Apply\\ integration\\ by\\ parts"
+                ],
+                "type": "subgoal",
+                "verb": "look"
+            }
+        },
+        "2": {
+            "index": 11,
+            "node": {
+                "index": "2",
+                "label": "plug in -1 and -2 to evaluate the expression",
+                "noun": "in -1 and -2 to evaluate the expression",
+                "steps": [
+                    "Evaluate\\ the\\ expression"
+                ],
+                "type": "subgoal",
+                "verb": "plug"
+            }
+        }
+    },
+    {
+        "0": {
+            "index": 34,
+            "node": {
+                "index": "0",
+                "label": "use substitution by parts",
+                "noun": "substitution by parts",
+                "steps": [
+                    "u\\ =\\ x+2,\\ du=dx"
+                ],
+                "type": "subgoal",
+                "verb": "use"
+            }
+        },
+        "1": {
+            "index": 35,
+            "node": {
+                "index": "1",
+                "label": "substitute variable to simplify expression",
+                "noun": "variable to simplify expression",
+                "steps": [
+                    "\\int_0^1\\left(u-2\\right)\\left(u\\right)^3du"
+                ],
+                "type": "subgoal",
+                "verb": "substitute"
+            }
+        },
+        "2": {
+            "index": 13,
+            "node": {
+                "index": "2",
+                "label": "multiply the factors",
+                "noun": "the factors",
+                "steps": [
+                    "\\int_0^1\\left(u^4-2u^3\\right)du"
+                ],
+                "type": "subgoal",
+                "verb": "multiply"
+            }
+        },
+        "3": {
+            "index": 3,
+            "node": {
+                "index": "3",
+                "label": "solve definite integral",
+                "noun": "definite integral",
+                "steps": [
+                    "\\frac{u^5}{5}-\\frac{2u^4}{4}"
+                ],
+                "type": "subgoal",
+                "verb": "solve"
+            }
+        },
+        "4": {
+            "index": 11,
+            "node": {
+                "index": "4",
+                "label": "substitute the given numbers",
+                "noun": "the given numbers",
+                "steps": [
+                    "\\frac{1}{5}-\\frac{1}{2}=-\\frac{3}{10}"
+                ],
+                "type": "subgoal",
+                "verb": "substitute"
+            }
+        }
+    },
+    {
+        "0": {
+            "index": 5,
+            "node": {
+                "index": "0",
+                "label": "expand the expression",
+                "noun": "the expression",
+                "steps": [
+                    "\\int_{-2}^{-1}x^4+6x^3+12x^2+8x\\ dx"
+                ],
+                "type": "subgoal",
+                "verb": "expand"
+            }
+        },
+        "1": {
+            "index": 3,
+            "node": {
+                "index": "1",
+                "label": "integrate the function",
+                "noun": "the function",
+                "steps": [
+                    "\\left[\\frac{x^5}{5}+\\frac{6x^4}{4}+\\frac{12x^3}{3}+\\frac{8x^2}{2}\\right]_{-2}^{-1}"
+                ],
+                "type": "subgoal",
+                "verb": "integrate"
+            }
+        },
+        "2": {
+            "index": 11,
+            "node": {
+                "index": "2",
+                "label": "solve expression",
+                "noun": "expression",
+                "steps": [
+                    "-0.3"
+                ],
+                "type": "subgoal",
+                "verb": "solve"
+            }
+        }
+    },
+    {
+        "0": {
+            "index": 0,
+            "node": {
+                "index": "0",
+                "label": "repeat the question",
+                "noun": "the question",
+                "steps": [
+                    "f\\left(x\\right)=\\int_{-2}^{-1}x\\left(x+2\\right)^3dx"
+                ],
+                "type": "subgoal",
+                "verb": "repeat"
+            }
+        },
+        "1": {
+            "index": 5,
+            "node": {
+                "index": "1",
+                "label": "expand the expression",
+                "noun": "the expression",
+                "steps": [
+                    "f\\left(x\\right)=\\int_{-2}^{-1}x^4+6x^3+12x^2+8x\\ dx"
+                ],
+                "type": "subgoal",
+                "verb": "expand"
+            }
+        },
+        "2": {
+            "index": 17,
+            "node": {
+                "index": "2",
+                "label": "integrate the expression to get the formula",
+                "noun": "the expression to get the formula",
+                "steps": [
+                    "f\\left(x\\right)\\ =\\ 0.2x^5+1.5x^4+4x^3+4x^2"
+                ],
+                "type": "subgoal",
+                "verb": "integrate"
+            }
+        },
+        "3": {
+            "index": 11,
+            "node": {
+                "index": "3",
+                "label": "plug in -1 and -2 to evaluate the expression",
+                "noun": "in -1 and -2 to evaluate the expression",
+                "steps": [
+                    "f\\left(-1\\right)\\ -\\ f\\left(-2\\right)\\ =\\ -0.3"
+                ],
+                "type": "subgoal",
+                "verb": "plug"
+            }
+        }
+    },
+    {
+        "0": {
+            "index": 5,
+            "node": {
+                "index": "0",
+                "label": "expand the expression",
+                "noun": "the expression",
+                "steps": [
+                    "\\int_{-2}^{-1}x\\left(x^3+6x^2+12x+8\\right)dx"
+                ],
+                "type": "subgoal",
+                "verb": "expand"
+            }
+        },
+        "1": {
+            "index": 19,
+            "node": {
+                "index": "1",
+                "label": "merge into one expression",
+                "noun": "into one expression",
+                "steps": [
+                    "\\int_{-2}^{-1}\\left(x^4+6x^3+12x^2+8x\\right)dx"
+                ],
+                "type": "subgoal",
+                "verb": "merge"
+            }
+        },
+        "2": {
+            "index": 20,
+            "node": {
+                "index": "2",
+                "label": "distribute the integral term",
+                "noun": "the integral term",
+                "steps": [
+                    "\\int_{-2}^{-1}x^4dx\\ +\\ \\int_{-2}^{-1}6x^3dx+\\int_{-2}^{-1}12x^2dx+\\int_{-2}^{-1}8xdx"
+                ],
+                "type": "subgoal",
+                "verb": "distribute"
+            }
+        },
+        "3": {
+            "index": 3,
+            "node": {
+                "index": "3",
+                "label": "integrate the function",
+                "noun": "the function",
+                "steps": [
+                    "\\left[\\frac{1}{5}x^5+\\frac{3}{2}x^4+4x1.3-1.6^3+4x^2\\right]_{-2}^{-1}"
+                ],
+                "type": "subgoal",
+                "verb": "integrate"
+            }
+        }
+    },
+    {
+        "0": {
+            "index": 0,
+            "node": {
+                "index": "0",
+                "label": "substitute variable to simplify expression",
+                "noun": "variable to simplify expression",
+                "steps": [
+                    "simplify\\ the\\ formula\\ by\\ substituting\\ a\\ factor\\ of\\ cubic\\ terms"
+                ],
+                "type": "subgoal",
+                "verb": "substitute"
+            }
+        },
+        "1": {
+            "index": 5,
+            "node": {
+                "index": "1",
+                "label": "expand the expression",
+                "noun": "the expression",
+                "steps": [
+                    "reset\\ the\\ integration\\ area"
+                ],
+                "type": "subgoal",
+                "verb": "expand"
+            }
+        },
+        "2": {
+            "index": 11,
+            "node": {
+                "index": "2",
+                "label": "solve expression",
+                "noun": "expression",
+                "steps": [
+                    "conduct\\ an\\ integration"
+                ],
+                "type": "subgoal",
+                "verb": "solve"
+            }
+        }
+    },
+    {
+        "0": {
+            "index": 9,
+            "node": {
+                "index": "0",
+                "label": "substitute to use substitution integration",
+                "noun": "to use substitution integration",
+                "steps": [
+                    "u\\ =\\ x+2"
+                ],
+                "type": "subgoal",
+                "verb": "substitute"
+            }
+        },
+        "1": {
+            "index": 21,
+            "node": {
+                "index": "1",
+                "label": "change range of integration with respect to change of variable",
+                "noun": "range of integration with respect to change of variable",
+                "steps": [
+                    "change\\ the\\ range\\ of\\ integration\\ to\\ \\left[0,\\ 1\\right]"
+                ],
+                "type": "subgoal",
+                "verb": "change"
+            }
+        },
+        "2": {
+            "index": 37,
+            "node": {
+                "index": "2",
+                "label": "substitute the variable",
+                "noun": "the variable",
+                "steps": [
+                    "\\int_0^1\\left(u-2\\right)u^3du"
+                ],
+                "type": "subgoal",
+                "verb": "substitute"
+            }
+        },
+        "3": {
+            "index": 22,
+            "node": {
+                "index": "3",
+                "label": "write equation in polynomial form",
+                "noun": "equation in polynomial form",
+                "steps": [
+                    "=\\int_0^1u^4-2u^3du"
+                ],
+                "type": "subgoal",
+                "verb": "write"
+            }
+        },
+        "4": {
+            "index": 11,
+            "node": {
+                "index": "4",
+                "label": "calculate the solution with integration",
+                "noun": "the solution with integration",
+                "steps": [
+                    "=\\left[\\frac{u^5}{5}-\\frac{u^4}{2}\\right]_0^1",
+                    "=\\frac{-3}{10}"
+                ],
+                "type": "subgoal",
+                "verb": "calculate"
+            }
+        }
+    },
+    {
+        "0": {
+            "index": 9,
+            "node": {
+                "index": "0",
+                "label": "group the formula based on a term having a large degree in order to simplify the expression",
+                "noun": "the formula based on a term having a large degree in order to simplify the expression",
+                "steps": [
+                    "=\\int_{-2}^{-1}\\left(\\left(x+2\\right)-2\\right)\\cdot\\left(x+2\\right)^3dx"
+                ],
+                "type": "subgoal",
+                "verb": "group"
+            }
+        },
+        "1": {
+            "index": 25,
+            "node": {
+                "index": "1",
+                "label": "simplify the expression",
+                "noun": "the expression",
+                "steps": [
+                    "=\\int_0^1\\left(x-2\\right)\\cdot x^3dx",
+                    "=\\int_0^1\\left(x^4-2\\cdot x^3\\right)dx"
+                ],
+                "type": "subgoal",
+                "verb": "simplify"
+            }
+        },
+        "2": {
+            "index": 11,
+            "node": {
+                "index": "2",
+                "label": "solve expression",
+                "noun": "expression",
+                "steps": [
+                    "=\\frac{1}{5}-2\\cdot\\frac{1}{4}=-0.3"
+                ],
+                "type": "subgoal",
+                "verb": "solve"
+            }
+        }
+    },
+    {
+        "0": {
+            "index": 10,
+            "node": {
+                "index": "0",
+                "label": "use integration by parts",
+                "noun": "integration by parts",
+                "steps": [
+                    "x=u,\\ \\left(x+2\\right)^3=\\frac{dv}{dx}",
+                    "du\\ =\\ 1,v=\\frac{\\left((x+2)^4\\right)\u200b}{4}",
+                    "\\int_{-2}^{-1}x\\left(x+2\\right)^3=\\int_{-2}^{-1}u\\left(\\frac{dv}{dx}\\right)dx=\\left[uv\\right]_{-2}^{-1}-\\int_{-2}^{-1}vdu"
+                ],
+                "type": "subgoal",
+                "verb": "use"
+            }
+        },
+        "1": {
+            "index": 0,
+            "node": {
+                "index": "1",
+                "label": "substitute variable to simplify expression",
+                "noun": "variable to simplify expression",
+                "steps": [
+                    "\\left[uv\\right]_{-2}^{-1}-\\int_{-2}^{-1}vdu=\\left[\\frac{x\\left(x+2\\right)^4}{4}\\right]_{-2}^{-1}-\\frac{\\int_{-2}^{-1}\\left(x+2\\right)^4}{4}"
+                ],
+                "type": "subgoal",
+                "verb": "substitute"
+            }
+        },
+        "2": {
+            "index": 11,
+            "node": {
+                "index": "2",
+                "label": "calculate the solution with integration",
+                "noun": "the solution with integration",
+                "steps": [
+                    "-\\frac{1}{4}-\\left(\\frac{1}{20}\\right)"
+                ],
+                "type": "subgoal",
+                "verb": "calculate"
+            }
+        }
+    },
+    {
+        "0": {
+            "index": 0,
+            "node": {
+                "index": "0",
+                "label": "translate x into t to make the formula simply",
+                "noun": "x into t to make the formula simply",
+                "steps": [
+                    "x+2\\ =\\ t",
+                    "x\\ =\\ t-2"
+                ],
+                "type": "subgoal",
+                "verb": "translate"
+            }
+        },
+        "1": {
+            "index": 28,
+            "node": {
+                "index": "1",
+                "label": "translate x into t to make the formula",
+                "noun": "x into t to make the formula",
+                "steps": [
+                    "dx\\ =\\ dt"
+                ],
+                "type": "subgoal",
+                "verb": "translate"
+            }
+        },
+        "2": {
+            "index": 29,
+            "node": {
+                "index": "2",
+                "label": "differentiate both variables",
+                "noun": "both variables",
+                "steps": [
+                    "\\int_0^1\\left(t-2\\right)t^2dt",
+                    "\\int_0^1t^{4\\ }-2t^3dt"
+                ],
+                "type": "subgoal",
+                "verb": "differentiate"
+            }
+        },
+        "3": {
+            "index": 3,
+            "node": {
+                "index": "3",
+                "label": "solve definite integral",
+                "noun": "definite integral",
+                "steps": [
+                    "\\left[\\frac{1}{5}t^5-\\frac{1}{2}t^4\\right]_{0\\ \\ }^1=\\ \\frac{1}{5}-\\frac{1}{2}=-\\frac{3}{10}"
+                ],
+                "type": "subgoal",
+                "verb": "solve"
+            }
+        }
+    },
+    {
+        "0": {
+            "index": 0,
+            "node": {
+                "index": "0",
+                "label": "use integration by substitution for simpler form",
+                "noun": "integration by substitution for simpler form",
+                "steps": [
+                    "Let\\ x+2=t"
+                ],
+                "type": "subgoal",
+                "verb": "use"
+            }
+        },
+        "1": {
+            "index": 30,
+            "node": {
+                "index": "1",
+                "label": "change variables and integration interval",
+                "noun": "variables and integration interval",
+                "steps": [
+                    "dx=dt,\\ x\\left(x+2\\right)^3\\Rightarrow\\left(t-2\\right)t^3",
+                    "\\int_{-2}^{-1}x\\left(x+2\\right)^3dx=\\int_0^1\\left(t-2\\right)t^3dt"
+                ],
+                "type": "subgoal",
+                "verb": "change"
+            }
+        },
+        "2": {
+            "index": 31,
+            "node": {
+                "index": "2",
+                "label": "calculate the integral",
+                "noun": "the integral",
+                "steps": [
+                    "\\int_0^1\\left(t^4-2t^3\\right)dt=\\left[\\frac{1}{5}t^5-\\frac{1}{2}t^4\\right]_0^1=\\frac{1}{5}-\\frac{1}{2}=-0.3"
+                ],
+                "type": "subgoal",
+                "verb": "calculate"
+            }
+        },
+        "3": {
+            "index": 3,
+            "node": {
+                "index": "3",
+                "label": "solve definite integral",
+                "noun": "definite integral",
+                "steps": [
+                    "\\therefore-0.3"
+                ],
+                "type": "subgoal",
+                "verb": "solve"
+            }
+        }
+    },
+    {
+        "0": {
+            "index": 0,
+            "node": {
+                "index": "0",
+                "label": "think about whether x or (x+2)^3 would be better as dv",
+                "noun": "about whether x or (x+2)^3 would be better as dv",
+                "steps": [
+                    "substitute\\ t\\ for\\ x+2"
+                ],
+                "type": "subgoal",
+                "verb": "think"
+            }
+        },
+        "1": {
+            "index": 1,
+            "node": {
+                "index": "1",
+                "label": "solve indefinite integral for u",
+                "noun": "indefinite integral for u",
+                "steps": [
+                    "solve\\ fomule\\ in\\ integral"
+                ],
+                "type": "subgoal",
+                "verb": "solve"
+            }
+        },
+        "2": {
+            "index": 3,
+            "node": {
+                "index": "2",
+                "label": "solve definite integral",
+                "noun": "definite integral",
+                "steps": [
+                    "solve\\ integral"
+                ],
+                "type": "subgoal",
+                "verb": "solve"
+            }
+        }
+    },
+    {
+        "0": {
+            "index": 0,
+            "node": {
+                "index": "0",
+                "label": "use integration by substitution for simpler form",
+                "noun": "integration by substitution for simpler form",
+                "steps": [
+                    "\\int_{-2}^{-1}x\\left(x+2\\right)^3dx"
+                ],
+                "type": "subgoal",
+                "verb": "use"
+            }
+        },
+        "1": {
+            "index": 33,
+            "node": {
+                "index": "1",
+                "label": "change variables and integration interval",
+                "noun": "variables and integration interval",
+                "steps": [
+                    "x+2=t,\\ dx=dt",
+                    "\\int_{-2}^{-1}x\\left(x+2\\right)^3dx=\\int_0^1\\left(t-2\\right)t^3dt"
+                ],
+                "type": "subgoal",
+                "verb": "change"
+            }
+        },
+        "2": {
+            "index": 3,
+            "node": {
+                "index": "2",
+                "label": "factor polynomial function and do definite integration",
+                "noun": "polynomial function and do definite integration",
+                "steps": [
+                    "\\int_0^1\\left(t-2\\right)t^3dt=\\int_0^1\\left(t^4-2t^3\\right)dt=\\left[\\frac{1}{5}t^5-\\frac{1}{2}t^4\\right]_0^1=\\frac{1}{5}-\\frac{1}{2}=-\\frac{3}{10}"
+                ],
+                "type": "subgoal",
+                "verb": "factor"
+            }
+        }
+    },
+    {
+        "0": {
+            "index": 0,
+            "node": {
+                "index": "0",
+                "label": "substitute variable to simplify expression",
+                "noun": "variable to simplify expression",
+                "steps": [
+                    "x+2=t,\\ \\int_0^1t^3\\left(t-2\\right)dt"
+                ],
+                "type": "subgoal",
+                "verb": "substitute"
+            }
+        },
+        "1": {
+            "index": 3,
+            "node": {
+                "index": "1",
+                "label": "solve an integration",
+                "noun": "an integration",
+                "steps": [
+                    "\\int_0^1t^4-2t^3dt=\\left[\\frac{1}{5}t^5-\\frac{1}{2}t^4\\right]_0^1"
+                ],
+                "type": "subgoal",
+                "verb": "solve"
+            }
+        },
+        "2": {
+            "index": 11,
+            "node": {
+                "index": "2",
+                "label": "calculate the solution with integration",
+                "noun": "the solution with integration",
+                "steps": [
+                    "\\left[\\frac{1}{5}t^5-\\frac{1}{2}t^4\\right]_0^1=-0.3"
+                ],
+                "type": "subgoal",
+                "verb": "calculate"
+            }
+        }
+    },
+    {
+        "0": {
+            "index": 0,
+            "node": {
+                "index": "0",
+                "label": "expand the expression",
+                "noun": "the expression",
+                "steps": [
+                    "\\int_{-2}^{-1}\\ x\\left(x+2\\right)^3\\ dx=\\int_{-2}^{-1}\\ x\\left(x^3+6x^2+12x+8\\right)dx"
+                ],
+                "type": "subgoal",
+                "verb": "expand"
+            }
+        },
+        "1": {
+            "index": 5,
+            "node": {
+                "index": "1",
+                "label": "expand the expression further with the common factor",
+                "noun": "the expression further with the common factor",
+                "steps": [
+                    "\\int_{-2}^{-1}\\ x\\left(x^3+6x^2+12x+8\\right)dx=\\int_{-2}^{-1}\\ x^4+6x^3+12x^2+8xdx"
+                ],
+                "type": "subgoal",
+                "verb": "expand"
+            }
+        },
+        "2": {
+            "index": 3,
+            "node": {
+                "index": "2",
+                "label": "integrate the polynomial",
+                "noun": "the polynomial",
+                "steps": [
+                    "\\int_{-2}^{-1}\\ \\left(x^4+6x^3+12x^2+8x\\right)dx=\\left[\\frac{x^5}{5}+\\frac{3}{2}x^4+4x^3+4x^2\\right]_{-2}^{-1}"
+                ],
+                "type": "subgoal",
+                "verb": "integrate"
+            }
+        },
+        "3": {
+            "index": 11,
+            "node": {
+                "index": "3",
+                "label": "calculate the expression",
+                "noun": "the expression",
+                "steps": [
+                    "\\left[\\frac{x^5}{5}+\\frac{3}{2}x^4+4x^3+4x^2\\right]_{-2}^{-1}=\\frac{13}{10}-\\frac{16}{10}=-\\frac{3}{10}"
+                ],
+                "type": "subgoal",
+                "verb": "calculate"
+            }
+        }
+    },
+    {
+        "0": {
+            "index": 0,
+            "node": {
+                "index": "0",
+                "label": "modify given integral equation so that it becomes an expression in terms of (x+2)",
+                "noun": "given integral equation so that it becomes an expression in terms of (x+2)",
+                "steps": [
+                    "=\\int_{-2}^{-1}\\left(\\left(x+2\\right)-2\\right)\\left(x+2\\right)^3dx",
+                    "=\\int_{-2}^{-1}\\left(x+2\\right)^4-2\\left(x+2\\right)^3dx"
+                ],
+                "type": "subgoal",
+                "verb": "modify"
+            }
+        },
+        "1": {
+            "index": 5,
+            "node": {
+                "index": "1",
+                "label": "expand the expression",
+                "noun": "the expression",
+                "steps": [
+                    "=\\left[\\frac{1}{5}\\left(x+2\\right)^5-\\frac{1}{2}\\left(x+2\\right)^4\\right]_{-2}^{-1}"
+                ],
+                "type": "subgoal",
+                "verb": "expand"
+            }
+        },
+        "2": {
+            "index": 11,
+            "node": {
+                "index": "2",
+                "label": "do indefinite integral for previous integral equation",
+                "noun": "indefinite integral for previous integral equation",
+                "steps": [
+                    "=\\left(\\frac{1}{5}-\\frac{1}{2}\\right)=-\\frac{3}{10}"
+                ],
+                "type": "subgoal",
+                "verb": "do"
+            }
+        }
+    },
+    {
+        "0": {
+            "index": 5,
+            "node": {
+                "index": "0",
+                "label": "expand the expression",
+                "noun": "the expression",
+                "steps": [
+                    "\\int_{-2}^{-1}\\left(8x+3\\cdot4\\cdot x^2+3\\cdot2\\cdot x^3+x^4\\right)dx"
+                ],
+                "type": "subgoal",
+                "verb": "expand"
+            }
+        },
+        "1": {
+            "index": 3,
+            "node": {
+                "index": "1",
+                "label": "integrate the function",
+                "noun": "the function",
+                "steps": [
+                    "\\left[\\left(4x^2+4\\cdot x^3+\\frac{3\\cdot x^4}{2}+\\frac{x^5}{5}\\right)\\right]_{-2}^{-1}"
+                ],
+                "type": "subgoal",
+                "verb": "integrate"
+            }
+        },
+        "2": {
+            "index": 11,
+            "node": {
+                "index": "2",
+                "label": "calculate the expression",
+                "noun": "the expression",
+                "steps": [
+                    "-0.300"
+                ],
+                "type": "subgoal",
+                "verb": "calculate"
+            }
+        }
+    }
+]
