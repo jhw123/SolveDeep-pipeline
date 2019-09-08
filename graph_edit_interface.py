@@ -11,12 +11,14 @@ import argparse
 from matplotlib.widgets import TextBox, Button
 from ast import literal_eval
 import os.path
+import copy
 
 result = {}
 pos = {}
 cur_idx = 20
 max_idx = 20
 DG = nx.DiGraph()
+sequences_backup = []
 
 gs = matplotlib.gridspec.GridSpec(3, 3, width_ratios=[1, 10, 1], height_ratios=[1, 10, 1])
 
@@ -45,13 +47,45 @@ class Index(object):
 		pos = graphviz_layout(DG, prog='dot')
 		nx.draw_networkx_nodes(DG,pos,nodelist=l,node_color='r')
 		nx.draw_networkx_edges(DG,pos,edgelist=l_edges,edge_color='r')
+		global textbox_highlight
+		textbox_highlight.set_val("")
+
+	def undo(self, event):
+		print("undo")
+		global sequences_backup
+		print(sequences_backup)
+		if sequences_backup:
+			Seq.putSeqsIndices(sequences_backup)
+			drawGraph("new")
 
 	def submitMerge(self, text):
+		global DG_backup
+		DG_backup = DG
 		ind = literal_eval(text)
-		new_indices = Seq.mergeNodes(ind)
-		drawGraph("new")
-		pos = graphviz_layout(DG, prog='dot')
-		nx.draw_networkx_nodes(DG,pos,nodelist=new_indices,node_color='r')
+		global textbox_merge
+
+		if all(x for x in [Seq.getNodeLabels(idx) for idx in ind]):
+			loop_check = Seq.checkMerge(ind)
+			# Loop occurrence
+			if loop_check:
+				text = "Loop: "
+				text += ', '.join(map(str, loop_check))
+				alert.set_position((0, 0))
+				alert.set_text(text)
+				alert.set_visible(True)
+				textbox_merge.set_val("")
+				return
+
+			global sequences_backup
+			sequences_backup = Seq.getSeqsIndices()
+			print(sequences_backup)
+
+			new_indices = Seq.mergeNodes(ind)
+			drawGraph("new")
+			pos = graphviz_layout(DG, prog='dot')
+			nx.draw_networkx_nodes(DG,pos,nodelist=new_indices,node_color='r')
+
+		textbox_merge.set_val("")
 
 	def submitSeparate(self, text):
 		ind = literal_eval(text)
@@ -59,12 +93,14 @@ class Index(object):
 		drawGraph("new")
 		pos = graphviz_layout(DG, prog='dot')
 		nx.draw_networkx_nodes(DG,pos,nodelist=new_indices,node_color='r')
+		global textbox_separate
+		textbox_separate.set_val("")
 
 	def updateAnnotation(self, index):
 		global fig
-		global annot
-		annot.set_position(pos[index])
-		annot.xy = pos[index]
+		global annot, annotbox
+		#annot.set_position(pos[index])
+		annot.set_position((0, 0))
 
 		text = ''
 		labels = Seq.getNodeLabels(index)
@@ -77,9 +113,10 @@ class Index(object):
 		annot.set_text(text.rstrip())
 		annot.set_visible(True)
 		fig.canvas.draw_idle()
-		box = annot.get_window_extent()
+		annotbox = annot.get_window_extent()
 
 	def onClick(self, event):
+		alert.set_visible(False)
 		(x,y) = (event.xdata, event.ydata)
 		if not isinstance(x, float) or not isinstance(y, float):
 			return
@@ -87,7 +124,7 @@ class Index(object):
 		# Clicked node
 		for i in pos.keys():
 			dist = (x - pos[i][0]) ** 2 + (y - pos[i][1]) ** 2
-			if dist < 40:
+			if dist < 200:
 				self.updateAnnotation(i)
 				return
 
@@ -106,10 +143,11 @@ class Index(object):
 							l_edges = list(set(l_edges + list(zip(sequence,sequence[1:]))))
 							break
 				
-				drawGraph("new")
+				drawGraph("")
 				nx.draw_networkx_nodes(DG,pos,nodelist=set(l),node_color='r')
 				nx.draw_networkx_edges(DG,pos,edgelist=set(l_edges),edge_color='r')
 				return
+		drawGraph("")
 		
 
 def edgeClick(point, edge):
@@ -150,8 +188,6 @@ def drawGraph(option):
 	global cur_idx, problem_num, experiment_id
 	global fig, ax
 	global DG
-	global annot
-
 	refresh()
 
 	if option == "+1":
@@ -210,21 +246,24 @@ def drawGraph(option):
 
 	global pos
 	pos = graphviz_layout(DG, prog='dot')
-	nx.draw(DG, pos, ax=ax, with_labels = True, width=weights, node_color = [x for x in nx.get_node_attributes(DG,'weight').values()], vmin = min(weight_lst) - max(weight_lst)/2, vmax = max(weight_lst)*2, cmap = plt.cm.get_cmap('Greens'))
+	nx.draw(DG, pos, ax=ax, with_labels = True, width=weights, node_color = [x for x in nx.get_node_attributes(DG,'weight').values()], vmin = min(weight_lst) - max(weight_lst)/2, vmax = max(weight_lst), cmap = plt.cm.get_cmap('Greens'))
 	#num_text = plt.text(0.1, 0.9, "Student " + str(cur_idx))
 	ax.set_title("Subgoal graph for students 0 ~ " + str(cur_idx))
 
 def refresh():
-	global ax, annot
+	global ax, annot, alert
 	plt.cla()
 	plt.axis('off')
 	ax = fig.add_subplot(gs[1, 1])
 
-	annot = ax.annotate("", xy=(0,0), bbox=dict(boxstyle='round,pad=0.2', fc='yellow'))
+	annot = ax.annotate("", xy=(0,0), xycoords='axes fraction', bbox=dict(boxstyle='round,pad=0.2', fc='yellow'))
 	annot.set_visible(False)
+	annot.draggable()
+	alert = ax.annotate("", xy=(0,0))
+	alert.set_visible(False)
 
 def showUI():
-	global fig, ax, annot
+	global fig, ax
 	#fig, ax = plt.subplots()
 	fig = plt.figure()
 	refresh()
@@ -232,20 +271,25 @@ def showUI():
 	callback = Index()
 	fig.canvas.mpl_connect('button_press_event', callback.onClick)
 	axtextbox_highlight = plt.axes([0.2, 0.05, 0.05, 0.05])
-	axtextbox_merge = plt.axes([0.3, 0.05, 0.05, 0.05])
-	axtextbox_separate = plt.axes([0.4, 0.05, 0.05, 0.05])
+	axtextbox_merge = plt.axes([0.35, 0.05, 0.05, 0.05])
+	axtextbox_separate = plt.axes([0.5, 0.05, 0.05, 0.05])
+	axundo = plt.axes([0.6, 0.05, 0.025, 0.05])
 	axprev = plt.axes([0.65, 0.05, 0.075, 0.05])
 	axnext = plt.axes([0.75, 0.05, 0.075, 0.05])
+
+	global textbox_highlight, textbox_merge, textbox_separate
 
 	textbox_highlight = TextBox(axtextbox_highlight, 'Student #')
 	textbox_highlight.on_submit(callback.submitHighlight)
 
-	textbox_merge = TextBox(axtextbox_merge, 'Merge')
+	textbox_merge = TextBox(axtextbox_merge, 'Merge (N#, N#)')
 	textbox_merge.on_submit(callback.submitMerge)
 
-	textbox_separate = TextBox(axtextbox_separate, 'Separate')
+	textbox_separate = TextBox(axtextbox_separate, 'Separate (N#, S#)')
 	textbox_separate.on_submit(callback.submitSeparate)
 
+	bundo = Button(axundo, 'Undo')
+	bundo.on_clicked(callback.undo)
 	bprev = Button(axprev, 'Previous')
 	bprev.on_clicked(callback.prev)
 	bnext = Button(axnext, 'Next')
