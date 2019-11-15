@@ -24,7 +24,7 @@ class Similarity(Resource):
 
             w1 = args['w1']
             w2 = args['w2']
-            sim = str(model.similarity(w1, w2))
+            sim = 1
 
             return {'w1': w1, 'w2': w2, 'similarity': sim}
         except Exception as e:
@@ -94,7 +94,7 @@ class Merge_sequence(Resource):
                         new_idx = G.add_node(node)
                         if (nodes.index(node)) == 0:
                             G.add_head(new_idx)
-                        elif (nodes.index(node)) == len(nodes):
+                        elif (nodes.index(node)) == (len(nodes)-1):
                             G.add_tail(new_idx)
                     for edge in edges:
                         G.add_edge([ int(edge[0]), int(edge[1]) ])
@@ -104,8 +104,9 @@ class Merge_sequence(Resource):
                     graph_alignment = alignment[2]
                     G.addSequenceToGraph(nodes, edges, seq_alignment, graph_alignment)
                 cnt += 1
+                G.n = cnt
+                db.child(topic+"/problems/"+problem_num+"/merge_history/"+str(cnt)).set(G.get_snapshot());
 
-            G.n = cnt
             G.print_nodes()
 
             return G.get_snapshot()
