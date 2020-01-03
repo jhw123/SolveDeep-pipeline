@@ -3,6 +3,7 @@ from networkx.drawing.nx_agraph import graphviz_layout
 import matplotlib.pyplot as plt
 import sys
 import json
+import argparse
 
 sys.argv[1]
 with open('result/'+sys.argv[1]+'.json') as result_file:    

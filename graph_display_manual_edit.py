@@ -11,6 +11,7 @@ def addEdge(x, y):
 	else:
 		G.add_edge(x, y, weight=1)
 
+
 def addPath(name, l):
 	for i in range(len(l) - 1):
 		addEdge(l[i], l[i+1])

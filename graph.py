@@ -6,6 +6,7 @@ class Graph:
 		self.heads = snapshot["heads"]
 		self.tails = snapshot["tails"]
 		self.n = snapshot["n"]
+		self.sequences = snapshot["sequences"]
 
 	def get_heads(self):
 		return self.heads
@@ -48,6 +49,9 @@ class Graph:
 		self.nodes.append({"index": self.max_index, "nodes": [node], "size": 1})
 		return self.max_index
 
+	def add_sequence(self, sequence):
+		self.sequences.append(sequence)
+
 	def get_edges(self):
 		return self.edges
 
@@ -63,7 +67,8 @@ class Graph:
 				"edges": self.edges,
 				"heads": self.heads,
 				"tails": self.tails,
-				"n": self.n
+				"n": self.n,
+				"sequences": self.sequences
 				}
 
 	def put_snapshot(self, snapshot):
@@ -73,6 +78,7 @@ class Graph:
 		self.heads = snapshot["heads"]
 		self.tails = snapshot["tails"]
 		self.n = snapshot["n"]
+		self.sequences = snapshot["sequences"]
 
 	def get_direct_children(self, idx):
 		direct_children = []
@@ -128,6 +134,7 @@ class Graph:
 
 	def addSequenceToGraph(self, sequence_nodes, sequence_edges, sequence_alignment, graph_alignment):
 		translation = {}
+		sequence = {}
 		for i in range(len(sequence_alignment)):
 			seq_pattern = sequence_alignment[i]
 			graph_pattern = graph_alignment[i]
@@ -149,6 +156,9 @@ class Graph:
 				
 				node_group_node["size"] += 1
 				translation[seq_pattern] = graph_pattern
+				sequence[seq_pattern] = {}
+				sequence[seq_pattern]["index"] = int(graph_pattern)
+				sequence[seq_pattern]["node"] = seq_node
 	        # Mismatch: do nothing
 			elif seq_pattern == "_":
 				continue
@@ -161,9 +171,13 @@ class Graph:
 				if is_tail:
 					self.add_tail(new_idx)
 				translation[seq_pattern] = str(new_idx)
+				sequence[seq_pattern] = {}
+				sequence[seq_pattern]["index"] = new_idx
+				sequence[seq_pattern]["node"] = seq_node
 		for edge in sequence_edges:
 			self.add_edge([ int(translation[str(edge[0])]), int(translation[str(edge[1])]) ])
 		self.n += 1
+		return sequence
 
 	#print all the infomation about this graph
 	def print_nodes(self):
