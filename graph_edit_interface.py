@@ -45,10 +45,8 @@ class Index(object):
 		l = Seq.getSeqIndices(student_num)
 		l_edges = list(zip(l,l[1:]))
 		pos = graphviz_layout(DG, prog='dot')
-		nx.draw_networkx_nodes(DG,pos,nodelist=l,node_color='r')
+		#nx.draw_networkx_nodes(DG,pos,nodelist=l,node_color='r', node_size=600)
 		nx.draw_networkx_edges(DG,pos,edgelist=l_edges,edge_color='r')
-		global textbox_highlight
-		textbox_highlight.set_val("")
 
 	def undo(self, event):
 		print("undo")
@@ -83,7 +81,7 @@ class Index(object):
 			new_indices = Seq.mergeNodes(ind)
 			drawGraph("new")
 			pos = graphviz_layout(DG, prog='dot')
-			nx.draw_networkx_nodes(DG,pos,nodelist=new_indices,node_color='r')
+			nx.draw_networkx_nodes(DG,pos,nodelist=new_indices,node_color='r', node_size=600)
 
 		textbox_merge.set_val("")
 
@@ -92,7 +90,7 @@ class Index(object):
 		new_indices = Seq.separateLabel(ind[0], ind[1])
 		drawGraph("new")
 		pos = graphviz_layout(DG, prog='dot')
-		nx.draw_networkx_nodes(DG,pos,nodelist=new_indices,node_color='r')
+		nx.draw_networkx_nodes(DG,pos,nodelist=new_indices,node_color='r', node_size=600)
 		global textbox_separate
 		textbox_separate.set_val("")
 
@@ -144,7 +142,7 @@ class Index(object):
 							break
 				
 				drawGraph("")
-				nx.draw_networkx_nodes(DG,pos,nodelist=set(l),node_color='r')
+				nx.draw_networkx_nodes(DG,pos,nodelist=set(l),node_color='r', node_size=600)
 				nx.draw_networkx_edges(DG,pos,edgelist=set(l_edges),edge_color='r')
 				return
 		drawGraph("")
@@ -184,10 +182,13 @@ def cleanZero(l):
 		if DG.node[x]['weight'] == 0:
 			DG.remove_node(x)
 
+node_count = 0
+
 def drawGraph(option):
 	global cur_idx, problem_num, experiment_id
 	global fig, ax
 	global DG
+	global node_count
 	refresh()
 
 	if option == "+1":
@@ -202,11 +203,14 @@ def drawGraph(option):
 				DG.node[l[i+1]]['weight'] += 1
 			else:
 				DG.node[l[i+1]]['weight'] = 1
+				node_count += 1
 
 		if 'weight' in DG.node[l[0]]:
 			DG.node[l[0]]['weight'] += 1
 		else:
 			DG.node[l[0]]['weight'] = 1
+			node_count += 1
+		print(node_count)
 	elif option == "-1":
 		l = Seq.getSeqIndices(cur_idx + 1)
 		for i in range(len(l) - 1):
@@ -246,7 +250,7 @@ def drawGraph(option):
 
 	global pos
 	pos = graphviz_layout(DG, prog='dot')
-	nx.draw(DG, pos, ax=ax, with_labels = True, width=weights, node_color = [x for x in nx.get_node_attributes(DG,'weight').values()], vmin = min(weight_lst) - max(weight_lst)/2, vmax = max(weight_lst), cmap = plt.cm.get_cmap('Greens'))
+	nx.draw(DG, pos, ax=ax, with_labels = True, font_size=18, node_size=600, width=weights, node_color = [x for x in nx.get_node_attributes(DG,'weight').values()], vmin = min(weight_lst) - max(weight_lst)/2, vmax = max(weight_lst), cmap = plt.cm.get_cmap('autumn_r'))
 	#num_text = plt.text(0.1, 0.9, "Student " + str(cur_idx))
 	ax.set_title("Subgoal graph for students 0 ~ " + str(cur_idx))
 
@@ -256,7 +260,7 @@ def refresh():
 	plt.axis('off')
 	ax = fig.add_subplot(gs[1, 1])
 
-	annot = ax.annotate("", xy=(0,0), xycoords='axes fraction', bbox=dict(boxstyle='round,pad=0.2', fc='yellow'))
+	annot = ax.annotate("", xy=(0,0), xycoords='axes fraction', bbox=dict(boxstyle='round,pad=0.2', fc='yellow'), fontsize=16)
 	annot.set_visible(False)
 	annot.draggable()
 	alert = ax.annotate("", xy=(0,0))
@@ -270,29 +274,35 @@ def showUI():
 
 	callback = Index()
 	fig.canvas.mpl_connect('button_press_event', callback.onClick)
-	axtextbox_highlight = plt.axes([0.2, 0.05, 0.05, 0.05])
-	axtextbox_merge = plt.axes([0.35, 0.05, 0.05, 0.05])
+	axtextbox_highlight = plt.axes([0.175, 0.05, 0.05, 0.05])
+	axtextbox_merge = plt.axes([0.325, 0.05, 0.05, 0.05])
 	axtextbox_separate = plt.axes([0.5, 0.05, 0.05, 0.05])
-	axundo = plt.axes([0.6, 0.05, 0.025, 0.05])
-	axprev = plt.axes([0.65, 0.05, 0.075, 0.05])
-	axnext = plt.axes([0.75, 0.05, 0.075, 0.05])
+	axundo = plt.axes([0.6, 0.05, 0.075, 0.05])
+	axprev = plt.axes([0.7, 0.05, 0.075, 0.05])
+	axnext = plt.axes([0.8, 0.05, 0.075, 0.05])
 
 	global textbox_highlight, textbox_merge, textbox_separate
 
 	textbox_highlight = TextBox(axtextbox_highlight, 'Student #')
+	textbox_highlight.label.set_fontsize(16)
 	textbox_highlight.on_submit(callback.submitHighlight)
 
 	textbox_merge = TextBox(axtextbox_merge, 'Merge (N#, N#)')
+	textbox_merge.label.set_fontsize(16)
 	textbox_merge.on_submit(callback.submitMerge)
 
 	textbox_separate = TextBox(axtextbox_separate, 'Separate (N#, S#)')
+	textbox_separate.label.set_fontsize(16)
 	textbox_separate.on_submit(callback.submitSeparate)
 
 	bundo = Button(axundo, 'Undo')
+	bundo.label.set_fontsize(16)
 	bundo.on_clicked(callback.undo)
 	bprev = Button(axprev, 'Previous')
+	bprev.label.set_fontsize(16)
 	bprev.on_clicked(callback.prev)
 	bnext = Button(axnext, 'Next')
+	bnext.label.set_fontsize(16)
 	bnext.on_clicked(callback.next)
 	
 	plt.sca(ax)

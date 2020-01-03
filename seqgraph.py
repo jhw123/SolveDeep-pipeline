@@ -27,6 +27,12 @@ class Sequence:
 		self.n = snapshot["n"]
 		self.maxidx = 0
 
+		sum = 0
+
+		for student_num in range(len(self.sequences)):
+			sum += len(self.sequences[student_num])
+			print(sum)
+
 	def getMaxIdx(self):
 		sequences = self.getSeqs()
 		l = []
